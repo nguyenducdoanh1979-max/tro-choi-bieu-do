@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trò chơi học tập - Biểu đồ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <h1>Hệ thống trò chơi học tập - Biểu đồ</h1>
+      <p>Giáo viên đăng nhập bằng Google. Học sinh vào bằng mã phòng.</p>
+    </header>
+
+    <main class="panels">
+      <section class="panel">
+        <h2>Giáo viên</h2>
+        <p class="sub">Chỉ email được cấp quyền mới đăng nhập được.</p>
+        <button id="googleLoginBtn" class="google-btn">Đăng nhập bằng Google</button>
+        <p id="loginMessage" class="message"></p>
+
+        <div id="teacherCard" class="user-card hidden">
+          <div><strong>Đăng nhập thành công</strong></div>
+          <div id="teacherEmail" class="small"></div>
+          <button id="logoutBtn" class="secondary-btn">Đăng xuất</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Học sinh</h2>
+        <label>Mã phòng</label>
+        <input id="roomCode" type="text" placeholder="Ví dụ: LOP6A01" />
+        <button id="joinBtn">Vào phòng</button>
+        <p id="joinMessage" class="message"></p>
+      </section>
+    </main>
+
+    <section class="note">
+      <h3>Lưu ý</h3>
+      <p>Bản này đã hoàn thiện phần đăng nhập Google cho giáo viên. Bước tiếp theo là tạo phòng, QR, học sinh vào phòng và realtime.</p>
+    </section>
+
+    <footer>
+      © 2026 Nguyễn Đức Doanh | THCS Đông Xá – Vân Đồn
+    </footer>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

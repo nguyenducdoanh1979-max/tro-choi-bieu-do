@@ -10,7 +10,7 @@
   <div class="page">
     <header class="hero">
       <h1>Hệ thống trò chơi học tập - Biểu đồ</h1>
-      <p>Giáo viên đăng nhập bằng Google. Học sinh vào bằng mã phòng.</p>
+      <p>Giáo viên đăng nhập bằng Google, tạo mã phòng và mã QR. Học sinh quét QR hoặc nhập mã để vào phòng.</p>
     </header>
 
     <main class="panels">
@@ -24,6 +24,19 @@
           <div><strong>Đăng nhập thành công</strong></div>
           <div id="teacherEmail" class="small"></div>
           <button id="logoutBtn" class="secondary-btn">Đăng xuất</button>
+
+          <div class="room-box">
+            <label>Mã phòng</label>
+            <input id="teacherRoomCode" type="text" placeholder="Ví dụ: LOP6A01" value="LOP6A01" />
+            <button id="generateQrBtn">Tạo mã QR cho học sinh</button>
+          </div>
+
+          <div id="qrSection" class="qr-section hidden">
+            <div class="small"><strong>Link vào phòng:</strong></div>
+            <input id="roomLink" readonly />
+            <div id="qrImageWrap" class="qr-image-wrap"></div>
+            <button id="copyLinkBtn" class="secondary-btn">Sao chép link</button>
+          </div>
         </div>
       </section>
 
@@ -33,12 +46,17 @@
         <input id="roomCode" type="text" placeholder="Ví dụ: LOP6A01" />
         <button id="joinBtn">Vào phòng</button>
         <p id="joinMessage" class="message"></p>
+        <p class="small">Nếu học sinh quét QR, mã phòng sẽ tự điền vào ô này.</p>
       </section>
     </main>
 
     <section class="note">
-      <h3>Lưu ý</h3>
-      <p>Bản này đã hoàn thiện phần đăng nhập Google cho giáo viên. Bước tiếp theo là tạo phòng, QR, học sinh vào phòng và realtime.</p>
+      <h3>Lưu ý quan trọng để đăng nhập Google chạy được</h3>
+      <ol>
+        <li>Vào Firebase → Authentication → Settings → Authorized domains</li>
+        <li>Thêm domain Vercel của bạn, ví dụ: <strong>tro-choi-bieu-do.vercel.app</strong></li>
+        <li>Trong Firebase → Authentication → Sign-in method, Google phải ở trạng thái bật</li>
+      </ol>
     </section>
 
     <footer>

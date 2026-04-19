@@ -10,7 +10,7 @@ body {
 }
 
 .page {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 24px;
 }
@@ -112,6 +112,10 @@ button:hover {
   border: 1px solid #cbd5e1;
 }
 
+.room-box {
+  margin-top: 14px;
+}
+
 .small {
   margin-top: 6px;
   font-size: 14px;
@@ -123,12 +127,35 @@ button:hover {
   display: none;
 }
 
+.qr-section {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.qr-image-wrap {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.qr-image-wrap img {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: white;
+  padding: 8px;
+}
+
 .note {
   margin-top: 24px;
   background: #fff;
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.note ol {
+  margin-bottom: 0;
 }
 
 footer {

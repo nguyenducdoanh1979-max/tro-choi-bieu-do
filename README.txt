@@ -1,18 +1,19 @@
-HUONG DAN NHANH - BAN LOGIN GOOGLE
+HUONG DAN NHANH - LOGIN GOOGLE + MA QR
 
 1. Firebase Authentication
-- Ban da bat Google provider roi
-- Neu can, vao Firebase > Authentication > Settings > Authorized domains
-- Them domain sau khi deploy tren Vercel, vi du: ten-du-an.vercel.app
+- Da bat Google provider
+- Vao Firebase > Authentication > Settings > Authorized domains
+- Them domain Vercel cua ban, vi du: tro-choi-bieu-do.vercel.app
 
-2. File nay da khoa chi cho email sau dang nhap giao vien:
-- nguyenducdoanh1979@gmail.com
+2. Phan giao vien
+- Dang nhap bang Google
+- Chi email trong ALLOWED_TEACHER_EMAILS moi duoc phep vao
+- Nhap ma phong va tao ma QR cho hoc sinh
 
-3. Dua len web bang Vercel
-- Tao repo GitHub moi
-- Upload cac file trong thu muc nay
-- Vao Vercel > New Project > chon repo > Deploy
+3. Phan hoc sinh
+- Co the nhap ma phong
+- Hoac quet QR, he thong se tu dien ma phong vao o nhap
 
-4. Neu login Google bi loi popup/domain
-- Kiem tra lai Authorized domains trong Firebase
-- Kiem tra da bat Google provider hay chua
+4. Neu can doi email giao vien duoc phep
+- Mo file main.js
+- Sua mang ALLOWED_TEACHER_EMAILS

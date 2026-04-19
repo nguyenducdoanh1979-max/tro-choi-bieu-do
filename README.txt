@@ -1,19 +1,11 @@
-HUONG DAN NHANH - LOGIN GOOGLE + MA QR
+BAN HOAN THIEN - CHI CHO PHEP 1 EMAIL GIAO VIEN
 
-1. Firebase Authentication
-- Da bat Google provider
-- Vao Firebase > Authentication > Settings > Authorized domains
-- Them domain Vercel cua ban, vi du: tro-choi-bieu-do.vercel.app
+1. Email giao vien duoc phep:
+nguyenducdoanh1979@gmail.com
 
-2. Phan giao vien
-- Dang nhap bang Google
-- Chi email trong ALLOWED_TEACHER_EMAILS moi duoc phep vao
-- Nhap ma phong va tao ma QR cho hoc sinh
+2. Trong Firebase > Authentication > Settings > Authorized domains
+Them domain dang dung, vi du:
+- tro-choi-bieu-do.vercel.app
+- tro-choi-bieu-do-2y4y.vercel.app
 
-3. Phan hoc sinh
-- Co the nhap ma phong
-- Hoac quet QR, he thong se tu dien ma phong vao o nhap
-
-4. Neu can doi email giao vien duoc phep
-- Mo file main.js
-- Sua mang ALLOWED_TEACHER_EMAILS
+3. Neu van loi, mo file main.js va doi ALLOWED_TEACHER_EMAIL theo dung Gmail ban muon dung.

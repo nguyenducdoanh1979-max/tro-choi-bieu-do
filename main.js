@@ -5,9 +5,7 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const ALLOWED_TEACHER_EMAILS = [
-  "nguyenducdoanh1979@gmail.com"
-];
+const ALLOWED_TEACHER_EMAIL = "nguyenducdoanh1979@gmail.com";
 
 const googleLoginBtn = document.getElementById("googleLoginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -73,26 +71,32 @@ googleLoginBtn.addEventListener("click", async () => {
   showMessage(loginMessage, "");
   try {
     const result = await signInWithPopup(auth, provider);
-    const email = result.user?.email || "";
+    const email = (result.user?.email || "").toLowerCase().trim();
 
-    if (!ALLOWED_TEACHER_EMAILS.includes(email)) {
+    if (email !== ALLOWED_TEACHER_EMAIL.toLowerCase()) {
       await signOut(auth);
-      showMessage(loginMessage, "Email này không có quyền truy cập phần giáo viên.", "error");
+      showMessage(
+        loginMessage,
+        `Email ${email} không có quyền truy cập. Chỉ cho phép: ${ALLOWED_TEACHER_EMAIL}`,
+        "error"
+      );
       return;
     }
 
-    showMessage(
-      loginMessage,
-      "Đăng nhập Google thành công.",
-      "success"
-    );
+    showMessage(loginMessage, "Đăng nhập Google thành công.", "success");
   } catch (error) {
     console.error(error);
-    showMessage(
-      loginMessage,
-      "Đăng nhập Google thất bại. Hãy kiểm tra Google provider đã bật và domain Vercel đã thêm trong Authorized domains.",
-      "error"
-    );
+    let msg = "Đăng nhập Google thất bại.";
+    if (error && error.code === "auth/unauthorized-domain") {
+      msg = "Domain này chưa được thêm trong Firebase Authorized domains.";
+    } else if (error && error.code === "auth/popup-closed-by-user") {
+      msg = "Bạn đã đóng cửa sổ đăng nhập Google.";
+    } else if (error && error.code === "auth/popup-blocked") {
+      msg = "Trình duyệt đang chặn popup đăng nhập Google.";
+    } else {
+      msg = "Đăng nhập Google thất bại. Hãy kiểm tra Google provider đã bật và domain Vercel đã thêm trong Authorized domains.";
+    }
+    showMessage(loginMessage, msg, "error");
   }
 });
 

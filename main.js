@@ -11,7 +11,8 @@ import {
   where,
   getDoc,
   orderBy,
-  updateDoc
+  updateDoc,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const ALLOWED_TEACHER_EMAILS = [
@@ -34,6 +35,8 @@ const qrSection = document.getElementById("qrSection");
 const roomLink = document.getElementById("roomLink");
 const qrImageWrap = document.getElementById("qrImageWrap");
 const copyLinkBtn = document.getElementById("copyLinkBtn");
+const startRoomBtn = document.getElementById("startRoomBtn");
+const refreshRoomBtn = document.getElementById("refreshRoomBtn");
 
 const joinBtn = document.getElementById("joinBtn");
 const joinMessage = document.getElementById("joinMessage");
@@ -71,6 +74,9 @@ const statRoomCount = document.getElementById("statRoomCount");
 let selectedQuestion = null;
 let questionCache = [];
 let roomCache = [];
+let currentTeacherRoomId = null;
+let currentTeacherRoomUnsub = null;
+let currentStudentRoomUnsub = null;
 
 function showMessage(el, text, type = "") {
   el.textContent = text;
@@ -112,6 +118,11 @@ function renderTeacher(user) {
     googleLoginBtn.classList.remove("hidden");
     qrSection.classList.add("hidden");
     roomCreatedBox.classList.add("hidden");
+    startRoomBtn.classList.add("hidden");
+    refreshRoomBtn.classList.add("hidden");
+    currentTeacherRoomId = null;
+    if (currentTeacherRoomUnsub) currentTeacherRoomUnsub();
+    currentTeacherRoomUnsub = null;
     questionList.innerHTML = "";
     roomList.innerHTML = "";
     questionCache = [];
@@ -189,6 +200,41 @@ function renderStudentQuestion(question) {
   studentQuestionTable.innerHTML = html;
 }
 
+async function renderStudentRoomFromData(roomDocId, roomData) {
+  studentRoomBox.classList.remove("hidden");
+  studentRoomInfo.textContent = `Mã phòng: ${roomData.roomCode} | Thời gian: ${roomData.duration || 15} phút | Đề: ${roomData.questionTitle || ""}`;
+
+  if (roomData.status !== "started") {
+    studentWaitingBox.classList.remove("hidden");
+    studentQuestionBox.classList.add("hidden");
+    return;
+  }
+
+  studentWaitingBox.classList.add("hidden");
+
+  if (roomData.questionId) {
+    const questionRef = doc(db, "question_bank", roomData.questionId);
+    const questionSnap = await getDoc(questionRef);
+    if (questionSnap.exists()) {
+      renderStudentQuestion({ id: questionSnap.id, ...questionSnap.data() });
+    } else {
+      studentQuestionBox.classList.add("hidden");
+    }
+  } else {
+    studentQuestionBox.classList.add("hidden");
+  }
+}
+
+function watchStudentRoom(roomDocId) {
+  if (currentStudentRoomUnsub) currentStudentRoomUnsub();
+  const ref = doc(db, "rooms", roomDocId);
+  currentStudentRoomUnsub = onSnapshot(ref, async (snap) => {
+    if (!snap.exists()) return;
+    const roomData = snap.data();
+    await renderStudentRoomFromData(roomDocId, roomData);
+  });
+}
+
 async function openStudentRoom(roomCode) {
   try {
     const q = query(collection(db, "rooms"), where("roomCode", "==", roomCode));
@@ -206,28 +252,8 @@ async function openStudentRoom(roomCode) {
     const roomData = roomDoc.data();
 
     showMessage(joinMessage, `Đã vào phòng: ${roomData.roomCode}`, "success");
-    studentRoomBox.classList.remove("hidden");
-    studentRoomInfo.textContent = `Mã phòng: ${roomData.roomCode} | Thời gian: ${roomData.duration || 15} phút | Đề: ${roomData.questionTitle || ""}`;
-
-    if (roomData.status !== "started") {
-      studentWaitingBox.classList.remove("hidden");
-      studentQuestionBox.classList.add("hidden");
-      return;
-    }
-
-    studentWaitingBox.classList.add("hidden");
-
-    if (roomData.questionId) {
-      const questionRef = doc(db, "question_bank", roomData.questionId);
-      const questionSnap = await getDoc(questionRef);
-      if (questionSnap.exists()) {
-        renderStudentQuestion({ id: questionSnap.id, ...questionSnap.data() });
-      } else {
-        studentQuestionBox.classList.add("hidden");
-      }
-    } else {
-      studentQuestionBox.classList.add("hidden");
-    }
+    watchStudentRoom(roomDoc.id);
+    await renderStudentRoomFromData(roomDoc.id, roomData);
   } catch (error) {
     console.error(error);
     showMessage(joinMessage, "Không mở được phòng thi.", "error");
@@ -242,6 +268,33 @@ async function applyRoomFromQuery() {
     showMessage(joinMessage, `Đã nhận mã phòng từ QR: ${room}`, "success");
     await openStudentRoom(room.toUpperCase());
   }
+}
+
+function updateTeacherRoomBox(roomData) {
+  roomCreatedBox.classList.remove("hidden");
+  qrSection.classList.remove("hidden");
+  const statusText = roomData.status === "started" ? "đã bắt đầu" : "chờ bắt đầu";
+  createdRoomInfo.textContent = `Mã phòng: ${roomData.roomCode} | Đề: ${roomData.questionTitle || ""} | Thời gian: ${roomData.duration || 15} phút | Trạng thái: ${statusText}`;
+
+  if (roomData.status === "started") {
+    startRoomBtn.textContent = "Đã bắt đầu";
+    startRoomBtn.disabled = true;
+  } else {
+    startRoomBtn.textContent = "Bắt đầu";
+    startRoomBtn.disabled = false;
+  }
+  startRoomBtn.classList.remove("hidden");
+  refreshRoomBtn.classList.remove("hidden");
+}
+
+function watchTeacherRoom(roomId) {
+  if (currentTeacherRoomUnsub) currentTeacherRoomUnsub();
+  const ref = doc(db, "rooms", roomId);
+  currentTeacherRoomUnsub = onSnapshot(ref, (snap) => {
+    if (!snap.exists()) return;
+    const data = snap.data();
+    updateTeacherRoomBox(data);
+  });
 }
 
 googleLoginBtn.addEventListener("click", async () => {
@@ -292,7 +345,7 @@ createRoomBtn.addEventListener("click", async () => {
   }
 
   try {
-    await addDoc(collection(db, "rooms"), {
+    const added = await addDoc(collection(db, "rooms"), {
       roomCode: code,
       questionId: selectedQuestion.id,
       questionTitle: selectedQuestion.title || "",
@@ -302,18 +355,50 @@ createRoomBtn.addEventListener("click", async () => {
       status: "waiting"
     });
 
+    currentTeacherRoomId = added.id;
     const link = buildRoomLink(code, selectedQuestion.id);
     roomLink.value = link;
     renderQrImage(link);
-    qrSection.classList.remove("hidden");
+    watchTeacherRoom(added.id);
+
     roomCreatedBox.classList.remove("hidden");
-    createdRoomInfo.textContent = `Mã phòng: ${code} | Đề: ${selectedQuestion.title || ""} | Thời gian: ${duration} phút | Trạng thái: chờ bắt đầu`;
-    showMessage(roomMessage, "Đã tạo phòng thi. Giáo viên cần bấm Bắt đầu.", "success");
-    loadRooms();
-    switchTab("rooms");
+    qrSection.classList.remove("hidden");
+    startRoomBtn.classList.remove("hidden");
+    refreshRoomBtn.classList.remove("hidden");
+    startRoomBtn.disabled = false;
+    startRoomBtn.textContent = "Bắt đầu";
+
+    showMessage(roomMessage, "Đã tạo phòng thi. QR vẫn giữ nguyên tại đây. Giáo viên bấm Bắt đầu khi sẵn sàng.", "success");
+    await loadRooms();
+    switchTab("room");
   } catch (error) {
     console.error(error);
     showMessage(roomMessage, "Tạo phòng thi thất bại. Kiểm tra Firestore Rules.", "error");
+  }
+});
+
+startRoomBtn.addEventListener("click", async () => {
+  if (!currentTeacherRoomId) {
+    showMessage(roomMessage, "Chưa có phòng hiện tại để bắt đầu.", "error");
+    return;
+  }
+  try {
+    await updateDoc(doc(db, "rooms", currentTeacherRoomId), {
+      status: "started",
+      startedAt: serverTimestamp()
+    });
+    showMessage(roomMessage, "Đã bắt đầu phòng thi. Học sinh đang chờ sẽ tự chạy.", "success");
+    await loadRooms();
+  } catch (err) {
+    console.error(err);
+    showMessage(roomMessage, "Không bắt đầu được phòng thi.", "error");
+  }
+});
+
+refreshRoomBtn.addEventListener("click", async () => {
+  if (currentTeacherRoomId) {
+    const snap = await getDoc(doc(db, "rooms", currentTeacherRoomId));
+    if (snap.exists()) updateTeacherRoomBox(snap.data());
   }
 });
 
@@ -452,17 +537,18 @@ async function loadQuestions() {
   }
 }
 
-async function startRoom(roomId) {
+async function startRoomFromList(roomId) {
   try {
     await updateDoc(doc(db, "rooms", roomId), {
       status: "started",
       startedAt: serverTimestamp()
     });
+    if (currentTeacherRoomId === roomId) {
+      showMessage(roomMessage, "Đã bắt đầu phòng thi.", "success");
+    }
     await loadRooms();
-    showMessage(roomMessage, "Đã bắt đầu phòng thi.", "success");
   } catch (err) {
     console.error(err);
-    showMessage(roomMessage, "Không bắt đầu được phòng thi.", "error");
   }
 }
 
@@ -506,7 +592,7 @@ async function loadRooms() {
 
       const btn = box.querySelector(".start-btn");
       if (!started) {
-        btn.addEventListener("click", () => startRoom(room.id));
+        btn.addEventListener("click", () => startRoomFromList(room.id));
       }
 
       roomList.appendChild(box);

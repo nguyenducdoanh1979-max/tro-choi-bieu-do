@@ -80,6 +80,9 @@ button:disabled { opacity: 0.6; cursor: default; }
   margin-top: 0;
   padding: 10px 14px;
 }
+.start-main-btn, .start-btn {
+  background: #2563eb;
+}
 .sub, .small {
   color: #475569;
   font-size: 14px;
@@ -134,6 +137,12 @@ button:disabled { opacity: 0.6; cursor: default; }
   border-radius: 14px;
   padding: 14px;
 }
+.teacher-room-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
 .stat-label { font-size: 13px; color: #64748b; }
 .stat-value { margin-top: 6px; font-size: 28px; font-weight: 700; }
 .question-item, .room-item {
@@ -155,7 +164,7 @@ button:disabled { opacity: 0.6; cursor: default; }
   padding: 10px;
   margin-top: 0;
 }
-.select-btn, .start-btn { background: #2563eb; }
+.select-btn { background: #2563eb; }
 .delete-btn { background: #b91c1c; }
 .qr-section, .student-room {
   margin-top: 14px;
@@ -191,7 +200,7 @@ footer {
   font-size: 13px;
 }
 @media (max-width: 860px) {
-  .layout, .stats-grid, .form-grid, .filter-grid {
+  .layout, .stats-grid, .form-grid, .filter-grid, .teacher-room-actions {
     grid-template-columns: 1fr;
   }
   .teacher-head, .question-actions {

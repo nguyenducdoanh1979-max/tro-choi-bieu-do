@@ -1,72 +1,56 @@
 * {
   box-sizing: border-box;
 }
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: linear-gradient(180deg, #eef4ff 0%, #f8fafc 100%);
   color: #0f172a;
 }
-
 .page {
-  max-width: 1120px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 24px;
 }
-
 .hero {
   text-align: center;
   margin-bottom: 24px;
 }
-
+.hero-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
 .hero h1 {
   margin: 0 0 8px;
-  font-size: 32px;
+  font-size: 34px;
 }
-
 .hero p {
   margin: 0;
   color: #475569;
 }
-
-.panels {
+.layout {
   display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
+  grid-template-columns: 1.45fr 0.75fr;
   gap: 20px;
 }
-
 .panel {
   background: #ffffff;
   border-radius: 18px;
   padding: 22px;
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
 }
-
-.teacher-panel {
-  min-height: 640px;
-}
-
-.panel h2,
-.panel h3,
-.panel h4 {
-  margin-top: 0;
-}
-
-.sub {
-  color: #475569;
-  font-size: 14px;
-}
-
 label {
   display: block;
   margin: 12px 0 6px;
   font-weight: 600;
 }
-
-input,
-select,
-textarea {
+input, select, textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #cbd5e1;
@@ -75,11 +59,7 @@ textarea {
   margin-bottom: 8px;
   background: white;
 }
-
-textarea {
-  resize: vertical;
-}
-
+textarea { resize: vertical; }
 button {
   margin-top: 12px;
   width: 100%;
@@ -91,48 +71,27 @@ button {
   font-size: 15px;
   cursor: pointer;
 }
-
-button:hover {
-  opacity: 0.92;
-}
-
-.google-btn {
-  background: #2563eb;
-}
-
-.secondary-btn {
-  background: #475569;
-}
-
+button:hover { opacity: 0.92; }
+.google-btn { background: #2563eb; }
+.secondary-btn { background: #475569; }
 .small-btn {
   width: auto;
   margin-top: 0;
   padding: 10px 14px;
 }
-
+.sub, .small {
+  color: #475569;
+  font-size: 14px;
+}
+.hidden { display: none; }
 .message {
   min-height: 22px;
   margin-top: 12px;
   font-size: 14px;
   line-height: 1.4;
 }
-
-.success {
-  color: #15803d;
-}
-
-.error {
-  color: #b91c1c;
-}
-
-.user-card {
-  margin-top: 14px;
-  padding: 16px;
-  border-radius: 16px;
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-}
-
+.success { color: #15803d; }
+.error { color: #b91c1c; }
 .teacher-head {
   display: flex;
   justify-content: space-between;
@@ -140,165 +99,102 @@ button:hover {
   gap: 12px;
   margin-bottom: 16px;
 }
-
-.teacher-status {
-  font-weight: 700;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.room-box {
-  margin-top: 6px;
-}
-
-.small {
-  margin-top: 6px;
-  font-size: 14px;
-  color: #475569;
-  word-break: break-word;
-}
-
-.hidden {
-  display: none;
-}
-
+.teacher-status { font-weight: 700; }
 .tabs {
   display: flex;
   gap: 10px;
   margin-bottom: 16px;
+  flex-wrap: wrap;
 }
-
 .tab-btn {
   flex: 1;
+  min-width: 150px;
   margin-top: 0;
   background: #dbeafe;
   color: #1e3a8a;
   font-weight: 700;
 }
-
 .tab-btn.active {
   background: #2563eb;
   color: white;
 }
-
-.tab-panel {
-  display: none;
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.stats-grid, .form-grid, .filter-grid {
+  display: grid;
+  gap: 12px;
 }
-
-.tab-panel.active {
-  display: block;
-}
-
-.qr-section {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid #e2e8f0;
-}
-
-.qr-image-wrap {
-  margin-top: 12px;
-  display: flex;
-  justify-content: center;
-}
-
-.qr-image-wrap img {
+.stats-grid { grid-template-columns: 1fr 1fr; }
+.form-grid { grid-template-columns: 1fr 1fr; }
+.filter-grid { grid-template-columns: 1fr 1fr 1fr; margin-top: 12px; }
+.stat-card, .selected-box, .room-created {
+  background: #f8fafc;
   border: 1px solid #cbd5e1;
   border-radius: 14px;
-  background: white;
-  padding: 8px;
+  padding: 14px;
 }
-
-.question-bank {
-  margin-top: 4px;
-}
-
-.selected-box {
-  margin-top: 6px;
-  margin-bottom: 14px;
-  padding: 12px;
-  background: #eef6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 12px;
-}
-
-.bank-list {
-  margin-top: 18px;
-}
-
-.question-item {
+.stat-label { font-size: 13px; color: #64748b; }
+.stat-value { margin-top: 6px; font-size: 28px; font-weight: 700; }
+.question-item, .room-item {
   border: 1px solid #cbd5e1;
   border-radius: 14px;
   padding: 12px;
   margin-bottom: 12px;
   background: white;
 }
-
-.question-item-title {
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
+.question-item-title { font-weight: 700; margin-bottom: 6px; }
 .question-actions {
   display: flex;
   gap: 8px;
   margin-top: 10px;
 }
-
 .mini-btn {
   width: auto;
   flex: 1;
   padding: 10px;
   margin-top: 0;
 }
-
-.select-btn {
-  background: #2563eb;
+.select-btn { background: #2563eb; }
+.delete-btn { background: #b91c1c; }
+.qr-section, .student-room {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
 }
-
-.delete-btn {
-  background: #b91c1c;
+.qr-image-wrap {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
 }
-
-.note {
-  margin-top: 24px;
-  background: #fff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+.qr-image-wrap img {
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  background: white;
+  padding: 8px;
 }
-
-.note ol {
-  margin-bottom: 0;
+.table-wrap { overflow: auto; margin-top: 12px; }
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
 }
-
+.data-table th, .data-table td {
+  border: 1px solid #cbd5e1;
+  padding: 10px;
+  text-align: left;
+}
 footer {
   margin-top: 28px;
   text-align: center;
   color: #64748b;
   font-size: 13px;
 }
-
-@media (max-width: 768px) {
-  .panels {
+@media (max-width: 860px) {
+  .layout, .stats-grid, .form-grid, .filter-grid {
     grid-template-columns: 1fr;
   }
-
-  .hero h1 {
-    font-size: 24px;
-  }
-
-  .question-actions,
-  .form-grid,
-  .teacher-head {
+  .teacher-head, .question-actions {
     flex-direction: column;
-    grid-template-columns: 1fr;
   }
-
-  .small-btn {
-    width: 100%;
-  }
+  .small-btn { width: 100%; }
 }

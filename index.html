@@ -9,21 +9,22 @@
 <body>
   <div class="page">
     <header class="hero">
+      <div class="hero-badge">BẢN FIX FULL</div>
       <h1>Hệ thống trò chơi học tập - Biểu đồ</h1>
-      <p>Giáo viên đăng nhập bằng Google, quản lý đề thi, tạo phòng và mã QR cho học sinh.</p>
+      <p>Giáo viên đăng nhập bằng Google, quản lý ngân hàng đề, chọn đề, tạo phòng thi và mã QR cho học sinh.</p>
     </header>
 
-    <main class="panels">
-      <section class="panel teacher-panel">
+    <main class="layout">
+      <section class="panel">
         <h2>Giáo viên</h2>
-        <p class="sub">Chỉ email giáo viên được cấp quyền mới đăng nhập được.</p>
+        <p class="sub">Chỉ tài khoản giáo viên được cấp quyền mới đăng nhập được.</p>
 
         <div id="loginArea">
           <button id="googleLoginBtn" class="google-btn">Đăng nhập bằng Google</button>
           <p id="loginMessage" class="message"></p>
         </div>
 
-        <div id="teacherCard" class="user-card hidden">
+        <div id="teacherCard" class="hidden">
           <div class="teacher-head">
             <div>
               <div class="teacher-status">Đăng nhập thành công</div>
@@ -33,20 +34,106 @@
           </div>
 
           <div class="tabs">
-            <button id="tabBtnRoom" class="tab-btn active" data-tab="room">Tạo phòng</button>
-            <button id="tabBtnBank" class="tab-btn" data-tab="bank">Ngân hàng đề</button>
+            <button class="tab-btn active" data-tab="overview">Tổng quan</button>
+            <button class="tab-btn" data-tab="bank">Ngân hàng đề</button>
+            <button class="tab-btn" data-tab="room">Tạo phòng</button>
+            <button class="tab-btn" data-tab="rooms">Danh sách phòng</button>
           </div>
 
-          <div id="tab-room" class="tab-panel active">
+          <div id="tab-overview" class="tab-panel active">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-label">Số đề đã lưu</div>
+                <div id="statQuestionCount" class="stat-value">0</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Số phòng đã tạo</div>
+                <div id="statRoomCount" class="stat-value">0</div>
+              </div>
+            </div>
+
             <div class="selected-box">
               <strong>Đề đang chọn để tạo phòng:</strong>
               <div id="selectedQuestionName">Chưa chọn đề</div>
             </div>
+          </div>
 
-            <div class="room-box">
-              <label>Mã phòng</label>
-              <input id="teacherRoomCode" type="text" placeholder="Ví dụ: LOP6A01" value="LOP6A01" />
-              <button id="generateQrBtn">Tạo mã QR cho học sinh</button>
+          <div id="tab-bank" class="tab-panel">
+            <h3>Ngân hàng đề</h3>
+
+            <label>Tên đề</label>
+            <input id="questionTitle" placeholder="Ví dụ: So sánh số cây 3 tổ trong 2 tuần" />
+
+            <div class="form-grid">
+              <div>
+                <label>Khối / Lớp</label>
+                <input id="questionGrade" placeholder="Ví dụ: 6A2" />
+              </div>
+              <div>
+                <label>Môn học</label>
+                <input id="questionSubject" placeholder="Ví dụ: Toán" />
+              </div>
+            </div>
+
+            <label>Loại biểu đồ</label>
+            <select id="questionChartType">
+              <option value="bar">Biểu đồ cột</option>
+              <option value="double_bar">Biểu đồ cột kép</option>
+              <option value="horizontal_bar">Biểu đồ cột ngang</option>
+              <option value="pie">Biểu đồ quạt tròn</option>
+              <option value="pictogram">Biểu đồ tranh</option>
+              <option value="line">Biểu đồ đoạn thẳng</option>
+            </select>
+
+            <label>Nhãn dữ liệu</label>
+            <input id="questionLabels" placeholder="Ví dụ: Tổ 1, Tổ 2, Tổ 3" />
+
+            <label>Các đợt dữ liệu</label>
+            <input id="questionPeriods" placeholder="Ví dụ: Tuần 1, Tuần 2" />
+
+            <label>Số liệu</label>
+            <textarea id="questionValues" rows="5" placeholder="Ví dụ:
+Tuần 1: 4,6,5
+Tuần 2: 5,7,6"></textarea>
+
+            <label>Thời gian làm bài mặc định (phút)</label>
+            <input id="questionDuration" type="number" value="15" />
+
+            <button id="saveQuestionBtn">Lưu đề vào ngân hàng</button>
+            <p id="questionMessage" class="message"></p>
+
+            <div class="filter-grid">
+              <input id="filterKeyword" placeholder="Tìm theo tên đề..." />
+              <input id="filterGrade" placeholder="Lọc theo khối/lớp..." />
+              <input id="filterSubject" placeholder="Lọc theo môn..." />
+            </div>
+
+            <div class="bank-list">
+              <h4>Danh sách đề đã lưu</h4>
+              <div id="questionList"></div>
+            </div>
+          </div>
+
+          <div id="tab-room" class="tab-panel">
+            <h3>Tạo phòng thi</h3>
+
+            <div class="selected-box">
+              <strong>Đề đang chọn:</strong>
+              <div id="selectedQuestionNameRoom">Chưa chọn đề</div>
+            </div>
+
+            <label>Mã phòng</label>
+            <input id="teacherRoomCode" type="text" value="LOP6A01" />
+
+            <label>Thời gian làm bài (phút)</label>
+            <input id="roomDuration" type="number" value="15" />
+
+            <button id="createRoomBtn">Tạo phòng thi thật</button>
+            <p id="roomMessage" class="message"></p>
+
+            <div id="roomCreatedBox" class="room-created hidden">
+              <div class="room-created-title">Phòng thi đã tạo</div>
+              <div id="createdRoomInfo" class="small"></div>
             </div>
 
             <div id="qrSection" class="qr-section hidden">
@@ -57,78 +144,34 @@
             </div>
           </div>
 
-          <div id="tab-bank" class="tab-panel">
-            <div class="question-bank">
-              <h3>Ngân hàng đề</h3>
-
-              <label>Tên đề</label>
-              <input id="questionTitle" placeholder="Ví dụ: So sánh số cây 3 tổ trong 2 tuần" />
-
-              <div class="form-grid">
-                <div>
-                  <label>Khối / Lớp</label>
-                  <input id="questionGrade" placeholder="Ví dụ: Lớp 6" />
-                </div>
-                <div>
-                  <label>Môn học</label>
-                  <input id="questionSubject" placeholder="Ví dụ: Toán" />
-                </div>
-              </div>
-
-              <label>Loại biểu đồ</label>
-              <select id="questionChartType">
-                <option value="bar">Biểu đồ cột</option>
-                <option value="double_bar">Biểu đồ cột kép</option>
-                <option value="horizontal_bar">Biểu đồ cột ngang</option>
-                <option value="pie">Biểu đồ quạt tròn</option>
-                <option value="pictogram">Biểu đồ tranh</option>
-                <option value="line">Biểu đồ đoạn thẳng</option>
-              </select>
-
-              <label>Nhãn dữ liệu</label>
-              <input id="questionLabels" placeholder="Ví dụ: Tổ 1, Tổ 2, Tổ 3" />
-
-              <label>Các đợt dữ liệu</label>
-              <input id="questionPeriods" placeholder="Ví dụ: Tuần 1, Tuần 2" />
-
-              <label>Số liệu</label>
-              <textarea id="questionValues" rows="5" placeholder="Ví dụ:
-Tuần 1: 4,6,5
-Tuần 2: 5,7,6"></textarea>
-
-              <label>Thời gian làm bài (phút)</label>
-              <input id="questionDuration" type="number" value="15" />
-
-              <button id="saveQuestionBtn">Lưu đề vào ngân hàng</button>
-              <p id="questionMessage" class="message"></p>
-
-              <div class="bank-list">
-                <h4>Danh sách đề đã lưu</h4>
-                <div id="questionList"></div>
-              </div>
-            </div>
+          <div id="tab-rooms" class="tab-panel">
+            <h3>Danh sách phòng đã tạo</h3>
+            <div id="roomList"></div>
           </div>
         </div>
       </section>
 
-      <section class="panel">
+      <aside class="panel">
         <h2>Học sinh</h2>
         <label>Mã phòng</label>
         <input id="roomCode" type="text" placeholder="Ví dụ: LOP6A01" />
         <button id="joinBtn">Vào phòng</button>
         <p id="joinMessage" class="message"></p>
         <p class="small">Nếu học sinh quét QR, mã phòng sẽ tự điền vào ô này.</p>
-      </section>
-    </main>
 
-    <section class="note">
-      <h3>Lưu ý quan trọng để đăng nhập Google chạy được</h3>
-      <ol>
-        <li>Vào Firebase → Authentication → Settings → Authorized domains</li>
-        <li>Thêm domain Vercel của bạn</li>
-        <li>Trong Firebase → Authentication → Sign-in method, Google phải ở trạng thái bật</li>
-      </ol>
-    </section>
+        <div id="studentRoomBox" class="student-room hidden">
+          <h3>Phòng thi hiện tại</h3>
+          <div id="studentRoomInfo" class="small"></div>
+          <div id="studentQuestionBox" class="student-question hidden">
+            <h4 id="studentQuestionTitle"></h4>
+            <div id="studentQuestionMeta" class="small"></div>
+            <div class="table-wrap">
+              <table id="studentQuestionTable" class="data-table"></table>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
 
     <footer>
       © 2026 Nguyễn Đức Doanh - THCS Đông Xá - Vân Đồn - Quảng Ninh. SĐT: 0388584296

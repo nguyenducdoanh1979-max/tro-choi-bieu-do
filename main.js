@@ -10,7 +10,8 @@ import {
   query,
   where,
   getDoc,
-  orderBy
+  orderBy,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const ALLOWED_TEACHER_EMAILS = [
@@ -39,6 +40,7 @@ const joinMessage = document.getElementById("joinMessage");
 const roomCodeInput = document.getElementById("roomCode");
 const studentRoomBox = document.getElementById("studentRoomBox");
 const studentRoomInfo = document.getElementById("studentRoomInfo");
+const studentWaitingBox = document.getElementById("studentWaitingBox");
 const studentQuestionBox = document.getElementById("studentQuestionBox");
 const studentQuestionTitle = document.getElementById("studentQuestionTitle");
 const studentQuestionMeta = document.getElementById("studentQuestionMeta");
@@ -196,6 +198,7 @@ async function openStudentRoom(roomCode) {
       showMessage(joinMessage, "Không tìm thấy phòng thi này.", "error");
       studentRoomBox.classList.add("hidden");
       studentQuestionBox.classList.add("hidden");
+      studentWaitingBox.classList.add("hidden");
       return;
     }
 
@@ -205,6 +208,14 @@ async function openStudentRoom(roomCode) {
     showMessage(joinMessage, `Đã vào phòng: ${roomData.roomCode}`, "success");
     studentRoomBox.classList.remove("hidden");
     studentRoomInfo.textContent = `Mã phòng: ${roomData.roomCode} | Thời gian: ${roomData.duration || 15} phút | Đề: ${roomData.questionTitle || ""}`;
+
+    if (roomData.status !== "started") {
+      studentWaitingBox.classList.remove("hidden");
+      studentQuestionBox.classList.add("hidden");
+      return;
+    }
+
+    studentWaitingBox.classList.add("hidden");
 
     if (roomData.questionId) {
       const questionRef = doc(db, "question_bank", roomData.questionId);
@@ -288,7 +299,7 @@ createRoomBtn.addEventListener("click", async () => {
       duration: duration,
       teacherEmail: teacherEmail.textContent || "",
       createdAt: serverTimestamp(),
-      status: "ready"
+      status: "waiting"
     });
 
     const link = buildRoomLink(code, selectedQuestion.id);
@@ -296,10 +307,10 @@ createRoomBtn.addEventListener("click", async () => {
     renderQrImage(link);
     qrSection.classList.remove("hidden");
     roomCreatedBox.classList.remove("hidden");
-    createdRoomInfo.textContent = `Mã phòng: ${code} | Đề: ${selectedQuestion.title || ""} | Thời gian: ${duration} phút`;
-    showMessage(roomMessage, "Đã tạo phòng thi thật thành công.", "success");
+    createdRoomInfo.textContent = `Mã phòng: ${code} | Đề: ${selectedQuestion.title || ""} | Thời gian: ${duration} phút | Trạng thái: chờ bắt đầu`;
+    showMessage(roomMessage, "Đã tạo phòng thi. Giáo viên cần bấm Bắt đầu.", "success");
     loadRooms();
-    switchTab("room");
+    switchTab("rooms");
   } catch (error) {
     console.error(error);
     showMessage(roomMessage, "Tạo phòng thi thất bại. Kiểm tra Firestore Rules.", "error");
@@ -441,6 +452,20 @@ async function loadQuestions() {
   }
 }
 
+async function startRoom(roomId) {
+  try {
+    await updateDoc(doc(db, "rooms", roomId), {
+      status: "started",
+      startedAt: serverTimestamp()
+    });
+    await loadRooms();
+    showMessage(roomMessage, "Đã bắt đầu phòng thi.", "success");
+  } catch (err) {
+    console.error(err);
+    showMessage(roomMessage, "Không bắt đầu được phòng thi.", "error");
+  }
+}
+
 async function loadRooms() {
   try {
     roomList.innerHTML = "<div class='small'>Đang tải phòng thi...</div>";
@@ -467,12 +492,23 @@ async function loadRooms() {
     roomCache.forEach((room) => {
       const box = document.createElement("div");
       box.className = "room-item";
+      const started = room.status === "started";
+
       box.innerHTML = `
         <div class="question-item-title">${room.roomCode || ""}</div>
         <div class="small">Đề: ${room.questionTitle || ""}</div>
         <div class="small">Thời gian: ${room.duration || 15} phút</div>
-        <div class="small">Trạng thái: ${room.status || "ready"}</div>
+        <div class="small">Trạng thái: ${started ? "đã bắt đầu" : "chờ bắt đầu"}</div>
+        <div class="question-actions">
+          <button class="mini-btn start-btn" ${started ? "disabled" : ""}>${started ? "Đã bắt đầu" : "Bắt đầu"}</button>
+        </div>
       `;
+
+      const btn = box.querySelector(".start-btn");
+      if (!started) {
+        btn.addEventListener("click", () => startRoom(room.id));
+      }
+
       roomList.appendChild(box);
     });
   } catch (err) {

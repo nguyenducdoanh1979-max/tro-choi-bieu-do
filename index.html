@@ -9,9 +9,9 @@
 <body>
   <div class="page">
     <header class="hero">
-      <div class="hero-badge">BẢN FIX FULL</div>
+      <div class="hero-badge">BẢN CÓ NÚT BẮT ĐẦU</div>
       <h1>Hệ thống trò chơi học tập - Biểu đồ</h1>
-      <p>Giáo viên đăng nhập bằng Google, quản lý ngân hàng đề, chọn đề, tạo phòng thi và mã QR cho học sinh.</p>
+      <p>Giáo viên đăng nhập bằng Google, quản lý ngân hàng đề, chọn đề, tạo phòng thi và bắt đầu phòng cho học sinh.</p>
     </header>
 
     <main class="layout">
@@ -128,7 +128,7 @@ Tuần 2: 5,7,6"></textarea>
             <label>Thời gian làm bài (phút)</label>
             <input id="roomDuration" type="number" value="15" />
 
-            <button id="createRoomBtn">Tạo phòng thi thật</button>
+            <button id="createRoomBtn">Tạo phòng thi</button>
             <p id="roomMessage" class="message"></p>
 
             <div id="roomCreatedBox" class="room-created hidden">
@@ -162,6 +162,9 @@ Tuần 2: 5,7,6"></textarea>
         <div id="studentRoomBox" class="student-room hidden">
           <h3>Phòng thi hiện tại</h3>
           <div id="studentRoomInfo" class="small"></div>
+          <div id="studentWaitingBox" class="waiting-box hidden">
+            <strong>Phòng đã vào nhưng giáo viên chưa bấm Bắt đầu.</strong>
+          </div>
           <div id="studentQuestionBox" class="student-question hidden">
             <h4 id="studentQuestionTitle"></h4>
             <div id="studentQuestionMeta" class="small"></div>

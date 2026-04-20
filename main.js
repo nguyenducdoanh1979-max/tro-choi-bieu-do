@@ -41,6 +41,7 @@ const refreshRoomBtn = document.getElementById("refreshRoomBtn");
 const joinBtn = document.getElementById("joinBtn");
 const joinMessage = document.getElementById("joinMessage");
 const roomCodeInput = document.getElementById("roomCode");
+const studentNameInput = document.getElementById("studentName");
 const studentRoomBox = document.getElementById("studentRoomBox");
 const studentRoomInfo = document.getElementById("studentRoomInfo");
 const studentWaitingBox = document.getElementById("studentWaitingBox");
@@ -48,6 +49,9 @@ const studentQuestionBox = document.getElementById("studentQuestionBox");
 const studentQuestionTitle = document.getElementById("studentQuestionTitle");
 const studentQuestionMeta = document.getElementById("studentQuestionMeta");
 const studentQuestionTable = document.getElementById("studentQuestionTable");
+const studentWorkArea = document.getElementById("studentWorkArea");
+const submitWorkBtn = document.getElementById("submitWorkBtn");
+const submitMessage = document.getElementById("submitMessage");
 
 const questionTitle = document.getElementById("questionTitle");
 const questionGrade = document.getElementById("questionGrade");
@@ -77,6 +81,8 @@ let roomCache = [];
 let currentTeacherRoomId = null;
 let currentTeacherRoomUnsub = null;
 let currentStudentRoomUnsub = null;
+let currentStudentRoomId = null;
+let currentStudentQuestion = null;
 
 function showMessage(el, text, type = "") {
   el.textContent = text;
@@ -178,6 +184,7 @@ function validateQuestionForm() {
 }
 
 function renderStudentQuestion(question) {
+  currentStudentQuestion = question;
   studentQuestionBox.classList.remove("hidden");
   studentQuestionTitle.textContent = question.title || "Đề thi";
   studentQuestionMeta.textContent = `Khối: ${question.grade || ""} | Môn: ${question.subject || ""} | Loại biểu đồ: ${question.chartType || ""} | Thời gian: ${question.duration || 15} phút`;
@@ -198,9 +205,182 @@ function renderStudentQuestion(question) {
 
   html += "</tbody>";
   studentQuestionTable.innerHTML = html;
+  renderWorkArea(question);
+}
+
+function createCellKey(period, label) {
+  return `${period}__${label}`;
+}
+
+function renderWorkArea(question) {
+  studentWorkArea.innerHTML = "";
+  const labels = question.labels || [];
+  const periods = question.periods || [];
+  const chartType = question.chartType || "bar";
+  const valuesByPeriod = question.valuesByPeriod || {};
+
+  const title = document.createElement("div");
+  title.className = "work-title";
+  title.textContent = "Khu vực làm bài";
+  studentWorkArea.appendChild(title);
+
+  if (chartType === "pie") {
+    const note = document.createElement("div");
+    note.className = "small";
+    note.textContent = "Biểu đồ tròn: kéo thanh để chia tỉ lệ phần trăm theo nhãn dữ liệu của đợt đầu tiên.";
+    studentWorkArea.appendChild(note);
+
+    const firstPeriod = periods[0] || "Đợt 1";
+    const wrapper = document.createElement("div");
+    wrapper.className = "work-grid one-col";
+
+    labels.forEach((label, idx) => {
+      const row = document.createElement("div");
+      row.className = "slider-row";
+      row.innerHTML = `
+        <label>${label} (%)</label>
+        <input type="range" min="0" max="100" value="${Math.round(100 / Math.max(labels.length, 1))}" data-kind="pie" data-period="${firstPeriod}" data-label="${label}" />
+        <input type="number" min="0" max="100" value="${Math.round(100 / Math.max(labels.length, 1))}" data-kind="pie-number" data-period="${firstPeriod}" data-label="${label}" />
+      `;
+      wrapper.appendChild(row);
+    });
+
+    const totalBox = document.createElement("div");
+    totalBox.id = "pieTotalBox";
+    totalBox.className = "total-box";
+    totalBox.textContent = "Tổng hiện tại: 0%";
+    studentWorkArea.appendChild(wrapper);
+    studentWorkArea.appendChild(totalBox);
+
+    syncPieTotal();
+    syncRangesAndNumbers();
+    return;
+  }
+
+  if (chartType === "pictogram") {
+    const note = document.createElement("div");
+    note.className = "small";
+    note.textContent = "Biểu đồ tranh: nhập số ô theo quy ước cho từng ô dữ liệu.";
+    studentWorkArea.appendChild(note);
+  } else {
+    const note = document.createElement("div");
+    note.className = "small";
+    note.textContent = "Biểu đồ cột / cột kép / cột ngang / đoạn thẳng: kéo thanh hoặc nhập số để dựng biểu đồ.";
+    studentWorkArea.appendChild(note);
+  }
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "work-grid";
+
+  periods.forEach((period) => {
+    labels.forEach((label) => {
+      const key = createCellKey(period, label);
+      const currentValue = (valuesByPeriod[period] || [])[labels.indexOf(label)] ?? 0;
+
+      const cell = document.createElement("div");
+      cell.className = "work-card";
+
+      if (chartType === "pictogram") {
+        cell.innerHTML = `
+          <div class="work-card-title">${period} - ${label}</div>
+          <input type="number" min="0" step="1" value="${currentValue}" data-kind="pictogram" data-key="${key}" />
+        `;
+      } else {
+        cell.innerHTML = `
+          <div class="work-card-title">${period} - ${label}</div>
+          <input type="range" min="0" max="100" value="${currentValue}" data-kind="range" data-key="${key}" />
+          <input type="number" min="0" step="1" value="${currentValue}" data-kind="number" data-key="${key}" />
+        `;
+      }
+
+      wrapper.appendChild(cell);
+    });
+  });
+
+  studentWorkArea.appendChild(wrapper);
+  syncRangesAndNumbers();
+}
+
+function syncRangesAndNumbers() {
+  document.querySelectorAll('input[data-kind="range"]').forEach((range) => {
+    range.oninput = () => {
+      const number = document.querySelector(`input[data-kind="number"][data-key="${range.dataset.key}"]`);
+      if (number) number.value = range.value;
+    };
+  });
+
+  document.querySelectorAll('input[data-kind="number"]').forEach((number) => {
+    number.oninput = () => {
+      const range = document.querySelector(`input[data-kind="range"][data-key="${number.dataset.key}"]`);
+      if (range) range.value = number.value;
+    };
+  });
+
+  document.querySelectorAll('input[data-kind="pie"]').forEach((range) => {
+    range.oninput = () => {
+      const number = document.querySelector(`input[data-kind="pie-number"][data-label="${range.dataset.label}"][data-period="${range.dataset.period}"]`);
+      if (number) number.value = range.value;
+      syncPieTotal();
+    };
+  });
+
+  document.querySelectorAll('input[data-kind="pie-number"]').forEach((number) => {
+    number.oninput = () => {
+      const range = document.querySelector(`input[data-kind="pie"][data-label="${number.dataset.label}"][data-period="${number.dataset.period}"]`);
+      if (range) range.value = number.value;
+      syncPieTotal();
+    };
+  });
+}
+
+function syncPieTotal() {
+  const nums = [...document.querySelectorAll('input[data-kind="pie-number"]')].map((el) => Number(el.value || 0));
+  const total = nums.reduce((a, b) => a + b, 0);
+  const box = document.getElementById("pieTotalBox");
+  if (box) {
+    box.textContent = `Tổng hiện tại: ${total}%`;
+    box.className = total === 100 ? "total-box ok" : "total-box warn";
+  }
+}
+
+function collectStudentAnswer() {
+  if (!currentStudentQuestion) return null;
+  const chartType = currentStudentQuestion.chartType || "bar";
+
+  if (chartType === "pie") {
+    const pieAnswers = {};
+    document.querySelectorAll('input[data-kind="pie-number"]').forEach((input) => {
+      pieAnswers[input.dataset.label] = Number(input.value || 0);
+    });
+    return {
+      mode: "pie_percent",
+      values: pieAnswers
+    };
+  }
+
+  if (chartType === "pictogram") {
+    const answers = {};
+    document.querySelectorAll('input[data-kind="pictogram"]').forEach((input) => {
+      answers[input.dataset.key] = Number(input.value || 0);
+    });
+    return {
+      mode: "pictogram_cells",
+      values: answers
+    };
+  }
+
+  const answers = {};
+  document.querySelectorAll('input[data-kind="number"]').forEach((input) => {
+    answers[input.dataset.key] = Number(input.value || 0);
+  });
+  return {
+    mode: "chart_values",
+    values: answers
+  };
 }
 
 async function renderStudentRoomFromData(roomDocId, roomData) {
+  currentStudentRoomId = roomDocId;
   studentRoomBox.classList.remove("hidden");
   studentRoomInfo.textContent = `Mã phòng: ${roomData.roomCode} | Thời gian: ${roomData.duration || 15} phút | Đề: ${roomData.questionTitle || ""}`;
 
@@ -419,6 +599,36 @@ joinBtn.addEventListener("click", async () => {
     return;
   }
   await openStudentRoom(roomCode);
+});
+
+submitWorkBtn.addEventListener("click", async () => {
+  const studentName = studentNameInput.value.trim();
+  if (!studentName) {
+    showMessage(submitMessage, "Bạn chưa nhập họ và tên.", "error");
+    return;
+  }
+  if (!currentStudentRoomId || !currentStudentQuestion) {
+    showMessage(submitMessage, "Chưa có dữ liệu bài làm để nộp.", "error");
+    return;
+  }
+
+  try {
+    const answerData = collectStudentAnswer();
+    await addDoc(collection(db, "submissions"), {
+      roomId: currentStudentRoomId,
+      roomCode: roomCodeInput.value.trim().toUpperCase(),
+      studentName,
+      questionId: currentStudentQuestion.id,
+      questionTitle: currentStudentQuestion.title || "",
+      chartType: currentStudentQuestion.chartType || "",
+      answerData,
+      submittedAt: serverTimestamp()
+    });
+    showMessage(submitMessage, "Đã nộp bài thành công.", "success");
+  } catch (err) {
+    console.error(err);
+    showMessage(submitMessage, "Nộp bài thất bại. Kiểm tra Firestore Rules.", "error");
+  }
 });
 
 saveQuestionBtn.addEventListener("click", async () => {

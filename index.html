@@ -9,9 +9,9 @@
 <body>
   <div class="page">
     <header class="hero">
-      <div class="hero-badge">BẢN FIX REALTIME</div>
+      <div class="hero-badge">BẢN LÀM BÀI + NỘP BÀI</div>
       <h1>Hệ thống trò chơi học tập - Biểu đồ</h1>
-      <p>Giáo viên đăng nhập bằng Google, quản lý ngân hàng đề, tạo phòng thi, phát QR và bấm bắt đầu cho học sinh làm bài.</p>
+      <p>Giáo viên tạo phòng, học sinh vào phòng, làm bài theo dạng biểu đồ và nộp bài lên hệ thống.</p>
     </header>
 
     <main class="layout">
@@ -157,6 +157,9 @@ Tuần 2: 5,7,6"></textarea>
 
       <aside class="panel">
         <h2>Học sinh</h2>
+        <label>Họ và tên</label>
+        <input id="studentName" type="text" placeholder="Ví dụ: Nguyễn Văn A" />
+
         <label>Mã phòng</label>
         <input id="roomCode" type="text" placeholder="Ví dụ: LOP6A01" />
         <button id="joinBtn">Vào phòng</button>
@@ -169,12 +172,19 @@ Tuần 2: 5,7,6"></textarea>
           <div id="studentWaitingBox" class="waiting-box hidden">
             <strong>Phòng đã vào nhưng giáo viên chưa bấm Bắt đầu.</strong>
           </div>
+
           <div id="studentQuestionBox" class="student-question hidden">
             <h4 id="studentQuestionTitle"></h4>
             <div id="studentQuestionMeta" class="small"></div>
+
             <div class="table-wrap">
               <table id="studentQuestionTable" class="data-table"></table>
             </div>
+
+            <div id="studentWorkArea" class="student-work-area"></div>
+
+            <button id="submitWorkBtn" class="submit-btn">Nộp bài</button>
+            <p id="submitMessage" class="message"></p>
           </div>
         </div>
       </aside>

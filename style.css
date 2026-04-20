@@ -10,7 +10,7 @@ body {
 }
 
 .page {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 24px;
 }
@@ -32,15 +32,19 @@ body {
 
 .panels {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-columns: 1.25fr 0.75fr;
   gap: 20px;
 }
 
 .panel {
   background: #ffffff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.teacher-panel {
+  min-height: 640px;
 }
 
 .panel h2,
@@ -66,9 +70,10 @@ textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #cbd5e1;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 15px;
   margin-bottom: 8px;
+  background: white;
 }
 
 textarea {
@@ -80,7 +85,7 @@ button {
   width: 100%;
   padding: 12px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #0f172a;
   color: white;
   font-size: 15px;
@@ -97,6 +102,12 @@ button:hover {
 
 .secondary-btn {
   background: #475569;
+}
+
+.small-btn {
+  width: auto;
+  margin-top: 0;
+  padding: 10px 14px;
 }
 
 .message {
@@ -116,14 +127,32 @@ button:hover {
 
 .user-card {
   margin-top: 14px;
-  padding: 14px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 16px;
   background: #f8fafc;
   border: 1px solid #cbd5e1;
 }
 
+.teacher-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.teacher-status {
+  font-weight: 700;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
 .room-box {
-  margin-top: 14px;
+  margin-top: 6px;
 }
 
 .small {
@@ -135,6 +164,33 @@ button:hover {
 
 .hidden {
   display: none;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  flex: 1;
+  margin-top: 0;
+  background: #dbeafe;
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.tab-btn.active {
+  background: #2563eb;
+  color: white;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
 }
 
 .qr-section {
@@ -151,23 +207,22 @@ button:hover {
 
 .qr-image-wrap img {
   border: 1px solid #cbd5e1;
-  border-radius: 12px;
+  border-radius: 14px;
   background: white;
   padding: 8px;
 }
 
 .question-bank {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
+  margin-top: 4px;
 }
 
 .selected-box {
-  margin-top: 14px;
+  margin-top: 6px;
+  margin-bottom: 14px;
   padding: 12px;
   background: #eef6ff;
   border: 1px solid #bfdbfe;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 .bank-list {
@@ -176,7 +231,7 @@ button:hover {
 
 .question-item {
   border: 1px solid #cbd5e1;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 12px;
   margin-bottom: 12px;
   background: white;
@@ -236,7 +291,14 @@ footer {
     font-size: 24px;
   }
 
-  .question-actions {
+  .question-actions,
+  .form-grid,
+  .teacher-head {
     flex-direction: column;
+    grid-template-columns: 1fr;
+  }
+
+  .small-btn {
+    width: 100%;
   }
 }

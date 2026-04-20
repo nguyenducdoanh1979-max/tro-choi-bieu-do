@@ -54,6 +54,19 @@ function showMessage(el, text, type = "") {
   if (type) el.classList.add(type);
 }
 
+function switchTab(tabName) {
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.tab === tabName);
+  });
+  document.querySelectorAll(".tab-panel").forEach((panel) => {
+    panel.classList.toggle("active", panel.id === `tab-${tabName}`);
+  });
+}
+
+document.querySelectorAll(".tab-btn").forEach((btn) => {
+  btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+});
+
 function renderTeacher(user) {
   if (user) {
     teacherCard.classList.remove("hidden");
@@ -68,6 +81,7 @@ function renderTeacher(user) {
     questionList.innerHTML = "";
     selectedQuestion = null;
     selectedQuestionName.textContent = "Chưa chọn đề";
+    switchTab("room");
   }
 }
 
@@ -252,6 +266,7 @@ saveQuestionBtn.addEventListener("click", async () => {
     questionDuration.value = 15;
 
     loadQuestions();
+    switchTab("bank");
   } catch (err) {
     console.error(err);
     showMessage(questionMessage, "Lưu đề thất bại.", "error");
@@ -298,6 +313,7 @@ async function loadQuestions() {
         selectedQuestion = item;
         selectedQuestionName.textContent = item.title || "Đã chọn đề";
         showMessage(questionMessage, `Đã chọn đề: ${item.title}`, "success");
+        switchTab("room");
       });
 
       box.querySelector(".delete-btn").addEventListener("click", async () => {

@@ -32,7 +32,7 @@ body {
 
 .panels {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1.2fr 0.8fr;
   gap: 20px;
 }
 
@@ -43,7 +43,9 @@ body {
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
-.panel h2 {
+.panel h2,
+.panel h3,
+.panel h4 {
   margin-top: 0;
 }
 
@@ -58,16 +60,23 @@ label {
   font-weight: 600;
 }
 
-input {
+input,
+select,
+textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
   font-size: 15px;
+  margin-bottom: 8px;
+}
+
+textarea {
+  resize: vertical;
 }
 
 button {
-  margin-top: 16px;
+  margin-top: 12px;
   width: 100%;
   padding: 12px;
   border: none;
@@ -147,6 +156,58 @@ button:hover {
   padding: 8px;
 }
 
+.question-bank {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.selected-box {
+  margin-top: 14px;
+  padding: 12px;
+  background: #eef6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+}
+
+.bank-list {
+  margin-top: 18px;
+}
+
+.question-item {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: white;
+}
+
+.question-item-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.question-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.mini-btn {
+  width: auto;
+  flex: 1;
+  padding: 10px;
+  margin-top: 0;
+}
+
+.select-btn {
+  background: #2563eb;
+}
+
+.delete-btn {
+  background: #b91c1c;
+}
+
 .note {
   margin-top: 24px;
   background: #fff;
@@ -173,5 +234,9 @@ footer {
 
   .hero h1 {
     font-size: 24px;
+  }
+
+  .question-actions {
+    flex-direction: column;
   }
 }

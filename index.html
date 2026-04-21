@@ -3,201 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hệ thống trò chơi học tập - Biểu đồ</title>
+  <title>Bản web giống bản off - Biểu đồ</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="page">
     <header class="hero">
-      <div class="hero-badge">BẢN PRO FULL CODE</div>
-      <h1>Hệ thống trò chơi học tập - Biểu đồ</h1>
-      <p>Giáo viên tạo đề, tạo phòng, phát QR, bấm bắt đầu. Học sinh vào phòng, vẽ biểu đồ thật trực tiếp và nộp bài.</p>
+      <div class="badge">BẢN WEB THEO KIỂU OFFLINE</div>
+      <h1>Biểu đồ tương tác kiểu bài làm thật</h1>
+      <p>Không dùng slider để máy vẽ hộ. Học sinh thao tác trực tiếp trên biểu đồ như bản off.</p>
     </header>
 
     <main class="layout">
-      <section class="panel">
-        <h2>Giáo viên</h2>
-        <p class="sub">Chỉ tài khoản giáo viên được cấp quyền mới đăng nhập được.</p>
+      <section class="panel left">
+        <h2>Thiết lập đề</h2>
 
-        <div id="loginArea">
-          <button id="googleLoginBtn" class="google-btn">Đăng nhập bằng Google</button>
-          <p id="loginMessage" class="message"></p>
+        <label>Loại biểu đồ</label>
+        <select id="chartType">
+          <option value="bar">Biểu đồ cột</option>
+          <option value="double_bar">Biểu đồ cột kép</option>
+          <option value="line">Biểu đồ đoạn thẳng</option>
+          <option value="pie">Biểu đồ tròn</option>
+          <option value="pictogram">Biểu đồ tranh</option>
+        </select>
+
+        <label>Tên đề</label>
+        <input id="titleInput" value="Vẽ biểu đồ theo dữ liệu đã cho" />
+
+        <label>Nhãn trục / nhóm dữ liệu</label>
+        <input id="labelsInput" value="Tổ 1, Tổ 2, Tổ 3, Tổ 4" />
+
+        <label>Dãy 1</label>
+        <input id="values1Input" value="4, 6, 3, 5" />
+
+        <label id="values2Label">Dãy 2 (chỉ dùng cho cột kép)</label>
+        <input id="values2Input" value="5, 2, 4, 6" />
+
+        <label>Giá trị tối đa trục dọc / tổng phần trăm</label>
+        <input id="maxInput" type="number" value="10" />
+
+        <label>Đơn vị biểu đồ tranh: 1 ô = ...</label>
+        <input id="unitInput" type="number" value="1" />
+
+        <div class="button-row">
+          <button id="applyBtn">Áp dụng dữ liệu</button>
+          <button id="resetBtn" class="secondary">Đặt lại thao tác học sinh</button>
         </div>
 
-        <div id="teacherCard" class="hidden">
-          <div class="teacher-head">
-            <div>
-              <div class="teacher-status">Đăng nhập thành công</div>
-              <div id="teacherEmail" class="small"></div>
-            </div>
-            <button id="logoutBtn" class="secondary-btn small-btn">Đăng xuất</button>
-          </div>
-
-          <div class="tabs">
-            <button class="tab-btn active" data-tab="overview">Tổng quan</button>
-            <button class="tab-btn" data-tab="bank">Ngân hàng đề</button>
-            <button class="tab-btn" data-tab="room">Tạo phòng</button>
-            <button class="tab-btn" data-tab="rooms">Danh sách phòng</button>
-          </div>
-
-          <div id="tab-overview" class="tab-panel active">
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div class="stat-label">Số đề đã lưu</div>
-                <div id="statQuestionCount" class="stat-value">0</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-label">Số phòng đã tạo</div>
-                <div id="statRoomCount" class="stat-value">0</div>
-              </div>
-            </div>
-
-            <div class="selected-box">
-              <strong>Đề đang chọn để tạo phòng:</strong>
-              <div id="selectedQuestionName">Chưa chọn đề</div>
-            </div>
-
-            <div class="small note-mini">
-              Mẹo: vào tab <strong>Ngân hàng đề</strong> để chọn đề, sau đó sang <strong>Tạo phòng</strong>.
-            </div>
-          </div>
-
-          <div id="tab-bank" class="tab-panel">
-            <h3>Ngân hàng đề</h3>
-
-            <label>Tên đề</label>
-            <input id="questionTitle" placeholder="Ví dụ: So sánh số cây 3 tổ trong 2 tuần" />
-
-            <div class="form-grid">
-              <div>
-                <label>Khối / Lớp</label>
-                <input id="questionGrade" placeholder="Ví dụ: 6A2" />
-              </div>
-              <div>
-                <label>Môn học</label>
-                <input id="questionSubject" placeholder="Ví dụ: Toán" />
-              </div>
-            </div>
-
-            <label>Loại biểu đồ</label>
-            <select id="questionChartType">
-              <option value="bar">Biểu đồ cột</option>
-              <option value="double_bar">Biểu đồ cột kép</option>
-              <option value="line">Biểu đồ đoạn thẳng</option>
-              <option value="pie">Biểu đồ tròn</option>
-              <option value="pictogram">Biểu đồ tranh</option>
-            </select>
-
-            <label>Nhãn dữ liệu</label>
-            <input id="questionLabels" placeholder="Ví dụ: Tổ 1, Tổ 2, Tổ 3" />
-
-            <label>Các đợt dữ liệu</label>
-            <input id="questionPeriods" placeholder="Ví dụ: Tuần 1, Tuần 2" />
-
-            <label>Số liệu</label>
-            <textarea id="questionValues" rows="5" placeholder="Ví dụ:
-Tuần 1: 4,6,5
-Tuần 2: 5,7,6"></textarea>
-
-            <label>Thời gian làm bài mặc định (phút)</label>
-            <input id="questionDuration" type="number" value="15" />
-
-            <label>Giới hạn trục tối đa (để vẽ cột/đường)</label>
-            <input id="questionAxisMax" type="number" value="20" />
-
-            <label>Biểu đồ tranh: 1 ô vuông tương ứng</label>
-            <input id="questionPictogramUnit" type="number" value="1" />
-
-            <button id="saveQuestionBtn">Lưu đề vào ngân hàng</button>
-            <p id="questionMessage" class="message"></p>
-
-            <div class="filter-grid">
-              <input id="filterKeyword" placeholder="Tìm theo tên đề..." />
-              <input id="filterGrade" placeholder="Lọc theo khối/lớp..." />
-              <input id="filterSubject" placeholder="Lọc theo môn..." />
-            </div>
-
-            <div class="bank-list">
-              <h4>Danh sách đề đã lưu</h4>
-              <div id="questionList"></div>
-            </div>
-          </div>
-
-          <div id="tab-room" class="tab-panel">
-            <h3>Tạo phòng thi</h3>
-
-            <div class="selected-box">
-              <strong>Đề đang chọn:</strong>
-              <div id="selectedQuestionNameRoom">Chưa chọn đề</div>
-            </div>
-
-            <label>Mã phòng</label>
-            <input id="teacherRoomCode" type="text" value="LOP6A01" />
-
-            <label>Thời gian làm bài (phút)</label>
-            <input id="roomDuration" type="number" value="15" />
-
-            <button id="createRoomBtn">Tạo phòng thi</button>
-            <p id="roomMessage" class="message"></p>
-
-            <div id="roomCreatedBox" class="room-created hidden">
-              <div class="room-created-title">Phòng thi đã tạo</div>
-              <div id="createdRoomInfo" class="small"></div>
-              <div class="teacher-room-actions">
-                <button id="startRoomBtn" class="start-main-btn hidden">Bắt đầu</button>
-                <button id="refreshRoomBtn" class="secondary-btn hidden">Làm mới trạng thái</button>
-              </div>
-            </div>
-
-            <div id="qrSection" class="qr-section hidden">
-              <div class="small"><strong>Link vào phòng:</strong></div>
-              <input id="roomLink" readonly />
-              <div id="qrImageWrap" class="qr-image-wrap"></div>
-              <button id="copyLinkBtn" class="secondary-btn">Sao chép link</button>
-            </div>
-          </div>
-
-          <div id="tab-rooms" class="tab-panel">
-            <h3>Danh sách phòng đã tạo</h3>
-            <div id="roomList"></div>
-          </div>
+        <div class="help-box">
+          <strong>Cách thao tác giống bản off</strong>
+          <div id="helpText">Kéo đỉnh cột để đổi chiều cao cột.</div>
         </div>
       </section>
 
-      <aside class="panel">
-        <h2>Học sinh</h2>
-        <label>Họ và tên / Tên nhóm</label>
-        <input id="studentName" type="text" placeholder="Ví dụ: Nhóm 1" />
-
-        <label>Mã phòng</label>
-        <input id="roomCode" type="text" placeholder="Ví dụ: LOP6A01" />
-        <button id="joinBtn">Vào phòng</button>
-        <p id="joinMessage" class="message"></p>
-        <p class="small">Nếu học sinh quét QR, mã phòng sẽ tự điền vào ô này.</p>
-
-        <div id="studentRoomBox" class="student-room hidden">
-          <h3>Phòng thi hiện tại</h3>
-          <div id="studentRoomInfo" class="small"></div>
-          <div id="studentWaitingBox" class="waiting-box hidden">
-            <strong>Phòng đã vào nhưng giáo viên chưa bấm Bắt đầu.</strong>
+      <section class="panel right">
+        <div class="paper">
+          <div class="paper-head">
+            <h2 id="paperTitle">Vẽ biểu đồ theo dữ liệu đã cho</h2>
+            <div class="small-note">Học sinh thao tác trực tiếp trên biểu đồ</div>
           </div>
 
-          <div id="studentQuestionBox" class="student-question hidden">
-            <h4 id="studentQuestionTitle"></h4>
-            <div id="studentQuestionMeta" class="small"></div>
+          <div id="chartStage" class="chart-stage">
+            <svg id="chartSvg" viewBox="0 0 900 560" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
 
-            <div class="table-wrap">
-              <table id="studentQuestionTable" class="data-table"></table>
-            </div>
+          <div class="submit-row">
+            <button id="submitBtn">Nộp bài</button>
+            <div id="submitMsg"></div>
+          </div>
 
-            <div id="studentWorkArea" class="student-work-area"></div>
-
-            <button id="submitWorkBtn" class="submit-btn">Nộp bài</button>
-            <p id="submitMessage" class="message"></p>
+          <div class="json-box">
+            <div class="json-title">Dữ liệu bài làm hiện tại</div>
+            <pre id="answerPreview"></pre>
           </div>
         </div>
-      </aside>
+      </section>
     </main>
 
     <footer>
@@ -205,6 +85,6 @@ Tuần 2: 5,7,6"></textarea>
     </footer>
   </div>
 
-  <script type="module" src="main.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

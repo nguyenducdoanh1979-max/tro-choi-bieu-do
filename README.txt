@@ -1,11 +1,15 @@
-BAN HOAN THIEN - CHI CHO PHEP 1 EMAIL GIAO VIEN
+HUONG DAN SU DUNG
 
-1. Email giao vien duoc phep:
-nguyenducdoanh1979@gmail.com
+1. Giai nen file zip.
+2. Mo file index.html bang trinh duyet de xem ban mau.
+3. Day la ban web hoa phan thao tac giong ban off:
+   - Bieu do cot: keo dinh cot
+   - Bieu do cot kep: keo tung cot
+   - Bieu do doan thang: keo diem
+   - Bieu do tron: keo duong chia quat
+   - Bieu do tranh: bam to o vuong
 
-2. Trong Firebase > Authentication > Settings > Authorized domains
-Them domain dang dung, vi du:
-- tro-choi-bieu-do.vercel.app
-- tro-choi-bieu-do-2y4y.vercel.app
-
-3. Neu van loi, mo file main.js va doi ALLOWED_TEACHER_EMAIL theo dung Gmail ban muon dung.
+Ghi chu:
+- Ban nay tap trung vao TRAI NGHIEM ve bieu do giong ban off.
+- Chua noi lai Firebase / phong thi / dang nhap vao ban nay.
+- Neu muon, co the ghep module nay vao he thong web phong thi sau.

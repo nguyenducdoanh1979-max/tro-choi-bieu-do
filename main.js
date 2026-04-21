@@ -15,65 +15,66 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const ALLOWED_TEACHER_EMAILS = [
-  "nguyenducdoanh1979@gmail.com"
-];
+const ALLOWED_TEACHER_EMAILS = ["nguyenducdoanh1979@gmail.com"];
 
-const googleLoginBtn = document.getElementById("googleLoginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const loginMessage = document.getElementById("loginMessage");
-const teacherCard = document.getElementById("teacherCard");
-const teacherEmail = document.getElementById("teacherEmail");
+const $ = (id) => document.getElementById(id);
+const googleLoginBtn = $("googleLoginBtn");
+const logoutBtn = $("logoutBtn");
+const loginMessage = $("loginMessage");
+const teacherCard = $("teacherCard");
+const teacherEmail = $("teacherEmail");
 
-const teacherRoomCode = document.getElementById("teacherRoomCode");
-const roomDuration = document.getElementById("roomDuration");
-const createRoomBtn = document.getElementById("createRoomBtn");
-const roomCreatedBox = document.getElementById("roomCreatedBox");
-const createdRoomInfo = document.getElementById("createdRoomInfo");
-const roomMessage = document.getElementById("roomMessage");
-const qrSection = document.getElementById("qrSection");
-const roomLink = document.getElementById("roomLink");
-const qrImageWrap = document.getElementById("qrImageWrap");
-const copyLinkBtn = document.getElementById("copyLinkBtn");
-const startRoomBtn = document.getElementById("startRoomBtn");
-const refreshRoomBtn = document.getElementById("refreshRoomBtn");
+const teacherRoomCode = $("teacherRoomCode");
+const roomDuration = $("roomDuration");
+const createRoomBtn = $("createRoomBtn");
+const roomCreatedBox = $("roomCreatedBox");
+const createdRoomInfo = $("createdRoomInfo");
+const roomMessage = $("roomMessage");
+const qrSection = $("qrSection");
+const roomLink = $("roomLink");
+const qrImageWrap = $("qrImageWrap");
+const copyLinkBtn = $("copyLinkBtn");
+const startRoomBtn = $("startRoomBtn");
+const refreshRoomBtn = $("refreshRoomBtn");
 
-const joinBtn = document.getElementById("joinBtn");
-const joinMessage = document.getElementById("joinMessage");
-const roomCodeInput = document.getElementById("roomCode");
-const studentNameInput = document.getElementById("studentName");
-const studentRoomBox = document.getElementById("studentRoomBox");
-const studentRoomInfo = document.getElementById("studentRoomInfo");
-const studentWaitingBox = document.getElementById("studentWaitingBox");
-const studentQuestionBox = document.getElementById("studentQuestionBox");
-const studentQuestionTitle = document.getElementById("studentQuestionTitle");
-const studentQuestionMeta = document.getElementById("studentQuestionMeta");
-const studentQuestionTable = document.getElementById("studentQuestionTable");
-const studentWorkArea = document.getElementById("studentWorkArea");
-const submitWorkBtn = document.getElementById("submitWorkBtn");
-const submitMessage = document.getElementById("submitMessage");
+const joinBtn = $("joinBtn");
+const joinMessage = $("joinMessage");
+const roomCodeInput = $("roomCode");
+const studentNameInput = $("studentName");
+const studentRoomBox = $("studentRoomBox");
+const studentRoomInfo = $("studentRoomInfo");
+const studentWaitingBox = $("studentWaitingBox");
+const studentQuestionBox = $("studentQuestionBox");
+const studentQuestionTitle = $("studentQuestionTitle");
+const studentQuestionMeta = $("studentQuestionMeta");
+const studentQuestionTable = $("studentQuestionTable");
+const studentWorkArea = $("studentWorkArea");
+const submitWorkBtn = $("submitWorkBtn");
+const submitMessage = $("submitMessage");
 
-const questionTitle = document.getElementById("questionTitle");
-const questionGrade = document.getElementById("questionGrade");
-const questionSubject = document.getElementById("questionSubject");
-const questionChartType = document.getElementById("questionChartType");
-const questionLabels = document.getElementById("questionLabels");
-const questionPeriods = document.getElementById("questionPeriods");
-const questionValues = document.getElementById("questionValues");
-const questionDuration = document.getElementById("questionDuration");
-const saveQuestionBtn = document.getElementById("saveQuestionBtn");
-const questionMessage = document.getElementById("questionMessage");
-const questionList = document.getElementById("questionList");
-const selectedQuestionName = document.getElementById("selectedQuestionName");
-const selectedQuestionNameRoom = document.getElementById("selectedQuestionNameRoom");
+const questionTitle = $("questionTitle");
+const questionGrade = $("questionGrade");
+const questionSubject = $("questionSubject");
+const questionChartType = $("questionChartType");
+const questionLabels = $("questionLabels");
+const questionPeriods = $("questionPeriods");
+const questionValues = $("questionValues");
+const questionDuration = $("questionDuration");
+const questionAxisMax = $("questionAxisMax");
+const questionPictogramUnit = $("questionPictogramUnit");
+const saveQuestionBtn = $("saveQuestionBtn");
+const questionMessage = $("questionMessage");
+const questionList = $("questionList");
+const selectedQuestionName = $("selectedQuestionName");
+const selectedQuestionNameRoom = $("selectedQuestionNameRoom");
 
-const filterKeyword = document.getElementById("filterKeyword");
-const filterGrade = document.getElementById("filterGrade");
-const filterSubject = document.getElementById("filterSubject");
+const filterKeyword = $("filterKeyword");
+const filterGrade = $("filterGrade");
+const filterSubject = $("filterSubject");
 
-const roomList = document.getElementById("roomList");
-const statQuestionCount = document.getElementById("statQuestionCount");
-const statRoomCount = document.getElementById("statRoomCount");
+const roomList = $("roomList");
+const statQuestionCount = $("statQuestionCount");
+const statRoomCount = $("statRoomCount");
 
 let selectedQuestion = null;
 let questionCache = [];
@@ -83,6 +84,7 @@ let currentTeacherRoomUnsub = null;
 let currentStudentRoomUnsub = null;
 let currentStudentRoomId = null;
 let currentStudentQuestion = null;
+let currentChart = null;
 
 function showMessage(el, text, type = "") {
   el.textContent = text;
@@ -103,7 +105,7 @@ function switchTab(tabName) {
     btn.classList.toggle("active", btn.dataset.tab === tabName);
   });
   document.querySelectorAll(".tab-panel").forEach((panel) => {
-    panel.classList.toggle("active", panel.id === `tab-${tabName}`);
+    panel.classList.toggle("active", panel.id === "tab-" + tabName);
   });
 }
 
@@ -126,9 +128,9 @@ function renderTeacher(user) {
     roomCreatedBox.classList.add("hidden");
     startRoomBtn.classList.add("hidden");
     refreshRoomBtn.classList.add("hidden");
-    currentTeacherRoomId = null;
     if (currentTeacherRoomUnsub) currentTeacherRoomUnsub();
     currentTeacherRoomUnsub = null;
+    currentTeacherRoomId = null;
     questionList.innerHTML = "";
     roomList.innerHTML = "";
     questionCache = [];
@@ -183,200 +185,297 @@ function validateQuestionForm() {
   return "";
 }
 
-function renderStudentQuestion(question) {
-  currentStudentQuestion = question;
-  studentQuestionBox.classList.remove("hidden");
-  studentQuestionTitle.textContent = question.title || "Đề thi";
-  studentQuestionMeta.textContent = `Khối: ${question.grade || ""} | Môn: ${question.subject || ""} | Loại biểu đồ: ${question.chartType || ""} | Thời gian: ${question.duration || 15} phút`;
-
+function renderStudentDataTable(question) {
   const labels = question.labels || [];
   const periods = question.periods || [];
   const valuesByPeriod = question.valuesByPeriod || {};
-
   let html = "<thead><tr><th>Nhóm dữ liệu</th>";
-  labels.forEach((label) => { html += `<th>${label}</th>`; });
+  labels.forEach((label) => html += `<th>${label}</th>`);
   html += "</tr></thead><tbody>";
-
   periods.forEach((period) => {
     html += `<tr><td>${period}</td>`;
-    (valuesByPeriod[period] || []).forEach((value) => { html += `<td>${value}</td>`; });
+    (valuesByPeriod[period] || []).forEach((value) => html += `<td>${value}</td>`);
     html += "</tr>";
   });
-
   html += "</tbody>";
   studentQuestionTable.innerHTML = html;
-  renderWorkArea(question);
 }
 
-function createCellKey(period, label) {
-  return `${period}__${label}`;
+function chartLabelsFromQuestion(question) {
+  return question.labels || [];
+}
+
+function defaultDatasetValues(question, periodIndex=0) {
+  const periods = question.periods || [];
+  const p = periods[periodIndex] || periods[0] || "";
+  return [...((question.valuesByPeriod || {})[p] || [])];
+}
+
+function buildChartBox() {
+  const chartBox = document.createElement("div");
+  chartBox.className = "chart-box";
+  const canvas = document.createElement("canvas");
+  canvas.id = "studentChartCanvas";
+  chartBox.appendChild(canvas);
+  return { chartBox, canvas };
+}
+
+function destroyCurrentChart() {
+  if (currentChart) {
+    currentChart.destroy();
+    currentChart = null;
+  }
+}
+
+function createBarInteractive(question) {
+  const labels = chartLabelsFromQuestion(question);
+  const maxY = Number(question.axisMax || 20);
+  const values = defaultDatasetValues(question, 0);
+  const { chartBox, canvas } = buildChartBox();
+  studentWorkArea.appendChild(chartBox);
+
+  currentChart = new Chart(canvas.getContext("2d"), {
+    type: "bar",
+    data: { labels, datasets: [{ label: "Giá trị", data: values }] },
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: maxY } } }
+  });
+
+  const grid = document.createElement("div");
+  grid.className = "control-grid";
+  labels.forEach((label, i) => {
+    const card = document.createElement("div");
+    card.className = "control-card";
+    card.innerHTML = `
+      <div class="control-title">${label}</div>
+      <input type="range" min="0" max="${maxY}" value="${values[i] || 0}" data-i="${i}">
+      <input type="number" min="0" max="${maxY}" value="${values[i] || 0}" data-i="${i}">
+    `;
+    const range = card.querySelector('input[type="range"]');
+    const num = card.querySelector('input[type="number"]');
+    range.oninput = () => { num.value = range.value; currentChart.data.datasets[0].data[i] = Number(range.value); currentChart.update(); };
+    num.oninput = () => { range.value = num.value; currentChart.data.datasets[0].data[i] = Number(num.value || 0); currentChart.update(); };
+    grid.appendChild(card);
+  });
+  studentWorkArea.appendChild(grid);
+}
+
+function createDoubleBarInteractive(question) {
+  const labels = chartLabelsFromQuestion(question);
+  const periods = question.periods || [];
+  const maxY = Number(question.axisMax || 20);
+  const p1 = periods[0] || "Đợt 1";
+  const p2 = periods[1] || "Đợt 2";
+  const values1 = defaultDatasetValues(question, 0);
+  const values2 = defaultDatasetValues(question, 1);
+
+  const { chartBox, canvas } = buildChartBox();
+  studentWorkArea.appendChild(chartBox);
+
+  currentChart = new Chart(canvas.getContext("2d"), {
+    type: "bar",
+    data: { labels, datasets: [{ label: p1, data: values1 }, { label: p2, data: values2 }] },
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: maxY } } }
+  });
+
+  const grid = document.createElement("div");
+  grid.className = "control-grid";
+  [p1, p2].forEach((period, datasetIndex) => {
+    labels.forEach((label, i) => {
+      const val = datasetIndex === 0 ? values1[i] || 0 : values2[i] || 0;
+      const card = document.createElement("div");
+      card.className = "control-card";
+      card.innerHTML = `
+        <div class="control-title">${period} - ${label}</div>
+        <input type="range" min="0" max="${maxY}" value="${val}">
+        <input type="number" min="0" max="${maxY}" value="${val}">
+      `;
+      const range = card.querySelector('input[type="range"]');
+      const num = card.querySelector('input[type="number"]');
+      range.oninput = () => { num.value = range.value; currentChart.data.datasets[datasetIndex].data[i] = Number(range.value); currentChart.update(); };
+      num.oninput = () => { range.value = num.value; currentChart.data.datasets[datasetIndex].data[i] = Number(num.value || 0); currentChart.update(); };
+      grid.appendChild(card);
+    });
+  });
+  studentWorkArea.appendChild(grid);
+}
+
+function createLineInteractive(question) {
+  const labels = chartLabelsFromQuestion(question);
+  const maxY = Number(question.axisMax || 20);
+  const values = defaultDatasetValues(question, 0);
+
+  const { chartBox, canvas } = buildChartBox();
+  studentWorkArea.appendChild(chartBox);
+
+  currentChart = new Chart(canvas.getContext("2d"), {
+    type: "line",
+    data: { labels, datasets: [{ label: "Đường biểu diễn", data: values, tension: 0 }] },
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: maxY } } }
+  });
+
+  const grid = document.createElement("div");
+  grid.className = "control-grid";
+  labels.forEach((label, i) => {
+    const card = document.createElement("div");
+    card.className = "control-card";
+    card.innerHTML = `
+      <div class="control-title">${label}</div>
+      <input type="range" min="0" max="${maxY}" value="${values[i] || 0}">
+      <input type="number" min="0" max="${maxY}" value="${values[i] || 0}">
+    `;
+    const range = card.querySelector('input[type="range"]');
+    const num = card.querySelector('input[type="number"]');
+    range.oninput = () => { num.value = range.value; currentChart.data.datasets[0].data[i] = Number(range.value); currentChart.update(); };
+    num.oninput = () => { range.value = num.value; currentChart.data.datasets[0].data[i] = Number(num.value || 0); currentChart.update(); };
+    grid.appendChild(card);
+  });
+  studentWorkArea.appendChild(grid);
+}
+
+function updatePieTotal() {
+  const nums = [...studentWorkArea.querySelectorAll('[data-pie-number]')].map(el => Number(el.value || 0));
+  const total = nums.reduce((a,b)=>a+b,0);
+  const box = studentWorkArea.querySelector('.pie-total');
+  if (box) {
+    box.textContent = `Tổng hiện tại: ${total}%`;
+    box.className = total === 100 ? "pie-total ok" : "pie-total warn";
+  }
+}
+
+function createPieInteractive(question) {
+  const labels = chartLabelsFromQuestion(question);
+  const values = labels.map(() => Math.round(100 / Math.max(labels.length, 1)));
+  const { chartBox, canvas } = buildChartBox();
+  studentWorkArea.appendChild(chartBox);
+
+  currentChart = new Chart(canvas.getContext("2d"), {
+    type: "pie",
+    data: { labels, datasets: [{ data: values }] },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  const grid = document.createElement("div");
+  grid.className = "control-grid one-col";
+  labels.forEach((label, i) => {
+    const card = document.createElement("div");
+    card.className = "control-card";
+    card.innerHTML = `
+      <div class="control-title">${label}</div>
+      <input type="range" min="0" max="100" value="${values[i]}" data-pie-range="${i}">
+      <input type="number" min="0" max="100" value="${values[i]}" data-pie-number="${i}">
+    `;
+    const range = card.querySelector('[data-pie-range]');
+    const num = card.querySelector('[data-pie-number]');
+    range.oninput = () => { num.value = range.value; currentChart.data.datasets[0].data[i] = Number(range.value); currentChart.update(); updatePieTotal(); };
+    num.oninput = () => { range.value = num.value; currentChart.data.datasets[0].data[i] = Number(num.value || 0); currentChart.update(); updatePieTotal(); };
+    grid.appendChild(card);
+  });
+  studentWorkArea.appendChild(grid);
+
+  const total = document.createElement("div");
+  total.className = "pie-total warn";
+  total.textContent = "Tổng hiện tại: 0%";
+  studentWorkArea.appendChild(total);
+  updatePieTotal();
+}
+
+function createPictogramInteractive(question) {
+  const labels = chartLabelsFromQuestion(question);
+  const values = defaultDatasetValues(question, 0);
+  const unit = Number(question.pictogramUnit || 1);
+
+  const note = document.createElement("div");
+  note.className = "small";
+  note.textContent = `Biểu đồ tranh: 1 ô vuông tương ứng ${unit} đơn vị. Học sinh bấm vào ô để tô.`;
+  studentWorkArea.appendChild(note);
+
+  labels.forEach((label, i) => {
+    const section = document.createElement("div");
+    section.className = "pictogram-section";
+    const needed = Math.ceil((values[i] || 0) / Math.max(unit,1));
+    section.innerHTML = `
+      <div class="pictogram-head">
+        <strong>${label}</strong>
+        <span class="small">Cần thể hiện: ${values[i] || 0} đơn vị</span>
+      </div>
+      <div class="pictogram-grid" data-picto-grid="${i}"></div>
+      <div class="small">Số ô đã tô: <span data-picto-count="${i}">0</span></div>
+    `;
+    studentWorkArea.appendChild(section);
+    const grid = section.querySelector(`[data-picto-grid="${i}"]`);
+    for (let k = 0; k < 40; k++) {
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "picto-cell";
+      cell.dataset.active = "0";
+      cell.dataset.group = String(i);
+      cell.addEventListener("click", () => {
+        cell.dataset.active = cell.dataset.active === "1" ? "0" : "1";
+        cell.classList.toggle("active", cell.dataset.active === "1");
+        updatePictogramCount(i);
+      });
+      grid.appendChild(cell);
+    }
+    for (let k = 0; k < needed && k < 40; k++) {
+      const cell = grid.children[k];
+      cell.dataset.active = "1";
+      cell.classList.add("active");
+    }
+    updatePictogramCount(i);
+  });
+}
+
+function updatePictogramCount(groupIndex) {
+  const cells = [...studentWorkArea.querySelectorAll(`.picto-cell[data-group="${groupIndex}"]`)];
+  const active = cells.filter(c => c.dataset.active === "1").length;
+  const countBox = studentWorkArea.querySelector(`[data-picto-count="${groupIndex}"]`);
+  if (countBox) countBox.textContent = String(active);
 }
 
 function renderWorkArea(question) {
+  destroyCurrentChart();
   studentWorkArea.innerHTML = "";
-  const labels = question.labels || [];
-  const periods = question.periods || [];
-  const chartType = question.chartType || "bar";
-  const valuesByPeriod = question.valuesByPeriod || {};
 
   const title = document.createElement("div");
   title.className = "work-title";
   title.textContent = "Khu vực làm bài";
   studentWorkArea.appendChild(title);
 
-  if (chartType === "pie") {
-    const note = document.createElement("div");
-    note.className = "small";
-    note.textContent = "Biểu đồ tròn: kéo thanh để chia tỉ lệ phần trăm theo nhãn dữ liệu của đợt đầu tiên.";
-    studentWorkArea.appendChild(note);
-
-    const firstPeriod = periods[0] || "Đợt 1";
-    const wrapper = document.createElement("div");
-    wrapper.className = "work-grid one-col";
-
-    labels.forEach((label, idx) => {
-      const row = document.createElement("div");
-      row.className = "slider-row";
-      row.innerHTML = `
-        <label>${label} (%)</label>
-        <input type="range" min="0" max="100" value="${Math.round(100 / Math.max(labels.length, 1))}" data-kind="pie" data-period="${firstPeriod}" data-label="${label}" />
-        <input type="number" min="0" max="100" value="${Math.round(100 / Math.max(labels.length, 1))}" data-kind="pie-number" data-period="${firstPeriod}" data-label="${label}" />
-      `;
-      wrapper.appendChild(row);
-    });
-
-    const totalBox = document.createElement("div");
-    totalBox.id = "pieTotalBox";
-    totalBox.className = "total-box";
-    totalBox.textContent = "Tổng hiện tại: 0%";
-    studentWorkArea.appendChild(wrapper);
-    studentWorkArea.appendChild(totalBox);
-
-    syncPieTotal();
-    syncRangesAndNumbers();
-    return;
-  }
-
-  if (chartType === "pictogram") {
-    const note = document.createElement("div");
-    note.className = "small";
-    note.textContent = "Biểu đồ tranh: nhập số ô theo quy ước cho từng ô dữ liệu.";
-    studentWorkArea.appendChild(note);
-  } else {
-    const note = document.createElement("div");
-    note.className = "small";
-    note.textContent = "Biểu đồ cột / cột kép / cột ngang / đoạn thẳng: kéo thanh hoặc nhập số để dựng biểu đồ.";
-    studentWorkArea.appendChild(note);
-  }
-
-  const wrapper = document.createElement("div");
-  wrapper.className = "work-grid";
-
-  periods.forEach((period) => {
-    labels.forEach((label) => {
-      const key = createCellKey(period, label);
-      const currentValue = (valuesByPeriod[period] || [])[labels.indexOf(label)] ?? 0;
-
-      const cell = document.createElement("div");
-      cell.className = "work-card";
-
-      if (chartType === "pictogram") {
-        cell.innerHTML = `
-          <div class="work-card-title">${period} - ${label}</div>
-          <input type="number" min="0" step="1" value="${currentValue}" data-kind="pictogram" data-key="${key}" />
-        `;
-      } else {
-        cell.innerHTML = `
-          <div class="work-card-title">${period} - ${label}</div>
-          <input type="range" min="0" max="100" value="${currentValue}" data-kind="range" data-key="${key}" />
-          <input type="number" min="0" step="1" value="${currentValue}" data-kind="number" data-key="${key}" />
-        `;
-      }
-
-      wrapper.appendChild(cell);
-    });
-  });
-
-  studentWorkArea.appendChild(wrapper);
-  syncRangesAndNumbers();
-}
-
-function syncRangesAndNumbers() {
-  document.querySelectorAll('input[data-kind="range"]').forEach((range) => {
-    range.oninput = () => {
-      const number = document.querySelector(`input[data-kind="number"][data-key="${range.dataset.key}"]`);
-      if (number) number.value = range.value;
-    };
-  });
-
-  document.querySelectorAll('input[data-kind="number"]').forEach((number) => {
-    number.oninput = () => {
-      const range = document.querySelector(`input[data-kind="range"][data-key="${number.dataset.key}"]`);
-      if (range) range.value = number.value;
-    };
-  });
-
-  document.querySelectorAll('input[data-kind="pie"]').forEach((range) => {
-    range.oninput = () => {
-      const number = document.querySelector(`input[data-kind="pie-number"][data-label="${range.dataset.label}"][data-period="${range.dataset.period}"]`);
-      if (number) number.value = range.value;
-      syncPieTotal();
-    };
-  });
-
-  document.querySelectorAll('input[data-kind="pie-number"]').forEach((number) => {
-    number.oninput = () => {
-      const range = document.querySelector(`input[data-kind="pie"][data-label="${number.dataset.label}"][data-period="${number.dataset.period}"]`);
-      if (range) range.value = number.value;
-      syncPieTotal();
-    };
-  });
-}
-
-function syncPieTotal() {
-  const nums = [...document.querySelectorAll('input[data-kind="pie-number"]')].map((el) => Number(el.value || 0));
-  const total = nums.reduce((a, b) => a + b, 0);
-  const box = document.getElementById("pieTotalBox");
-  if (box) {
-    box.textContent = `Tổng hiện tại: ${total}%`;
-    box.className = total === 100 ? "total-box ok" : "total-box warn";
-  }
+  const type = question.chartType || "bar";
+  if (type === "bar") createBarInteractive(question);
+  else if (type === "double_bar") createDoubleBarInteractive(question);
+  else if (type === "line") createLineInteractive(question);
+  else if (type === "pie") createPieInteractive(question);
+  else if (type === "pictogram") createPictogramInteractive(question);
 }
 
 function collectStudentAnswer() {
   if (!currentStudentQuestion) return null;
-  const chartType = currentStudentQuestion.chartType || "bar";
+  const type = currentStudentQuestion.chartType || "bar";
 
-  if (chartType === "pie") {
-    const pieAnswers = {};
-    document.querySelectorAll('input[data-kind="pie-number"]').forEach((input) => {
-      pieAnswers[input.dataset.label] = Number(input.value || 0);
+  if (type === "pie") {
+    const values = {};
+    [...studentWorkArea.querySelectorAll('[data-pie-number]')].forEach((el, i) => {
+      const label = currentStudentQuestion.labels[i];
+      values[label] = Number(el.value || 0);
     });
-    return {
-      mode: "pie_percent",
-      values: pieAnswers
-    };
+    return { mode: "pie", values };
   }
 
-  if (chartType === "pictogram") {
-    const answers = {};
-    document.querySelectorAll('input[data-kind="pictogram"]').forEach((input) => {
-      answers[input.dataset.key] = Number(input.value || 0);
+  if (type === "pictogram") {
+    const values = {};
+    (currentStudentQuestion.labels || []).forEach((label, i) => {
+      const cells = [...studentWorkArea.querySelectorAll(`.picto-cell[data-group="${i}"]`)];
+      values[label] = cells.filter(c => c.dataset.active === "1").length;
     });
-    return {
-      mode: "pictogram_cells",
-      values: answers
-    };
+    return { mode: "pictogram", unit: Number(currentStudentQuestion.pictogramUnit || 1), values };
   }
 
-  const answers = {};
-  document.querySelectorAll('input[data-kind="number"]').forEach((input) => {
-    answers[input.dataset.key] = Number(input.value || 0);
-  });
-  return {
-    mode: "chart_values",
-    values: answers
-  };
+  if (currentChart) {
+    return { mode: type, datasets: currentChart.data.datasets.map(ds => ({ label: ds.label, data: [...ds.data] })) };
+  }
+
+  return null;
 }
 
 async function renderStudentRoomFromData(roomDocId, roomData) {
@@ -396,7 +495,12 @@ async function renderStudentRoomFromData(roomDocId, roomData) {
     const questionRef = doc(db, "question_bank", roomData.questionId);
     const questionSnap = await getDoc(questionRef);
     if (questionSnap.exists()) {
-      renderStudentQuestion({ id: questionSnap.id, ...questionSnap.data() });
+      currentStudentQuestion = { id: questionSnap.id, ...questionSnap.data() };
+      studentQuestionBox.classList.remove("hidden");
+      studentQuestionTitle.textContent = currentStudentQuestion.title || "Đề thi";
+      studentQuestionMeta.textContent = `Khối: ${currentStudentQuestion.grade || ""} | Môn: ${currentStudentQuestion.subject || ""} | Loại biểu đồ: ${currentStudentQuestion.chartType || ""} | Thời gian: ${currentStudentQuestion.duration || 15} phút`;
+      renderStudentDataTable(currentStudentQuestion);
+      renderWorkArea(currentStudentQuestion);
     } else {
       studentQuestionBox.classList.add("hidden");
     }
@@ -430,7 +534,6 @@ async function openStudentRoom(roomCode) {
 
     const roomDoc = snapshot.docs[0];
     const roomData = roomDoc.data();
-
     showMessage(joinMessage, `Đã vào phòng: ${roomData.roomCode}`, "success");
     watchStudentRoom(roomDoc.id);
     await renderStudentRoomFromData(roomDoc.id, roomData);
@@ -472,8 +575,7 @@ function watchTeacherRoom(roomId) {
   const ref = doc(db, "rooms", roomId);
   currentTeacherRoomUnsub = onSnapshot(ref, (snap) => {
     if (!snap.exists()) return;
-    const data = snap.data();
-    updateTeacherRoomBox(data);
+    updateTeacherRoomBox(snap.data());
   });
 }
 
@@ -483,13 +585,11 @@ googleLoginBtn.addEventListener("click", async () => {
     const result = await signInWithPopup(auth, provider);
     const email = (result.user && result.user.email ? result.user.email : "").toLowerCase().trim();
     const allowed = ALLOWED_TEACHER_EMAILS.map(x => x.toLowerCase());
-
     if (!allowed.includes(email)) {
       await signOut(auth);
       showMessage(loginMessage, `Email ${email} không có quyền truy cập phần giáo viên.`, "error");
       return;
     }
-
     showMessage(loginMessage, "Đăng nhập Google thành công.", "success");
   } catch (error) {
     console.error(error);
@@ -507,29 +607,21 @@ logoutBtn.addEventListener("click", async () => {
   showMessage(loginMessage, "Đã đăng xuất.", "success");
 });
 
-onAuthStateChanged(auth, (user) => {
-  renderTeacher(user);
-});
+onAuthStateChanged(auth, (user) => renderTeacher(user));
 
 createRoomBtn.addEventListener("click", async () => {
   const code = teacherRoomCode.value.trim().toUpperCase();
   const duration = Number(roomDuration.value || (selectedQuestion ? selectedQuestion.duration : 15) || 15);
 
-  if (!code) {
-    showMessage(roomMessage, "Bạn chưa nhập mã phòng.", "error");
-    return;
-  }
-  if (!selectedQuestion) {
-    showMessage(roomMessage, "Bạn chưa chọn đề trong ngân hàng đề.", "error");
-    return;
-  }
+  if (!code) return showMessage(roomMessage, "Bạn chưa nhập mã phòng.", "error");
+  if (!selectedQuestion) return showMessage(roomMessage, "Bạn chưa chọn đề trong ngân hàng đề.", "error");
 
   try {
     const added = await addDoc(collection(db, "rooms"), {
       roomCode: code,
       questionId: selectedQuestion.id,
       questionTitle: selectedQuestion.title || "",
-      duration: duration,
+      duration,
       teacherEmail: teacherEmail.textContent || "",
       createdAt: serverTimestamp(),
       status: "waiting"
@@ -558,15 +650,9 @@ createRoomBtn.addEventListener("click", async () => {
 });
 
 startRoomBtn.addEventListener("click", async () => {
-  if (!currentTeacherRoomId) {
-    showMessage(roomMessage, "Chưa có phòng hiện tại để bắt đầu.", "error");
-    return;
-  }
+  if (!currentTeacherRoomId) return showMessage(roomMessage, "Chưa có phòng hiện tại để bắt đầu.", "error");
   try {
-    await updateDoc(doc(db, "rooms", currentTeacherRoomId), {
-      status: "started",
-      startedAt: serverTimestamp()
-    });
+    await updateDoc(doc(db, "rooms", currentTeacherRoomId), { status: "started", startedAt: serverTimestamp() });
     showMessage(roomMessage, "Đã bắt đầu phòng thi. Học sinh đang chờ sẽ tự chạy.", "success");
     await loadRooms();
   } catch (err) {
@@ -576,10 +662,9 @@ startRoomBtn.addEventListener("click", async () => {
 });
 
 refreshRoomBtn.addEventListener("click", async () => {
-  if (currentTeacherRoomId) {
-    const snap = await getDoc(doc(db, "rooms", currentTeacherRoomId));
-    if (snap.exists()) updateTeacherRoomBox(snap.data());
-  }
+  if (!currentTeacherRoomId) return;
+  const snap = await getDoc(doc(db, "rooms", currentTeacherRoomId));
+  if (snap.exists()) updateTeacherRoomBox(snap.data());
 });
 
 copyLinkBtn.addEventListener("click", async () => {
@@ -594,23 +679,14 @@ copyLinkBtn.addEventListener("click", async () => {
 
 joinBtn.addEventListener("click", async () => {
   const roomCode = roomCodeInput.value.trim().toUpperCase();
-  if (!roomCode) {
-    showMessage(joinMessage, "Vui lòng nhập mã phòng.", "error");
-    return;
-  }
+  if (!roomCode) return showMessage(joinMessage, "Vui lòng nhập mã phòng.", "error");
   await openStudentRoom(roomCode);
 });
 
 submitWorkBtn.addEventListener("click", async () => {
   const studentName = studentNameInput.value.trim();
-  if (!studentName) {
-    showMessage(submitMessage, "Bạn chưa nhập họ và tên.", "error");
-    return;
-  }
-  if (!currentStudentRoomId || !currentStudentQuestion) {
-    showMessage(submitMessage, "Chưa có dữ liệu bài làm để nộp.", "error");
-    return;
-  }
+  if (!studentName) return showMessage(submitMessage, "Bạn chưa nhập họ tên hoặc tên nhóm.", "error");
+  if (!currentStudentRoomId || !currentStudentQuestion) return showMessage(submitMessage, "Chưa có dữ liệu bài làm để nộp.", "error");
 
   try {
     const answerData = collectStudentAnswer();
@@ -633,10 +709,7 @@ submitWorkBtn.addEventListener("click", async () => {
 
 saveQuestionBtn.addEventListener("click", async () => {
   const error = validateQuestionForm();
-  if (error) {
-    showMessage(questionMessage, error, "error");
-    return;
-  }
+  if (error) return showMessage(questionMessage, error, "error");
 
   try {
     const labels = parseCsvLikeText(questionLabels.value);
@@ -648,10 +721,12 @@ saveQuestionBtn.addEventListener("click", async () => {
       grade: questionGrade.value.trim(),
       subject: questionSubject.value.trim(),
       chartType: questionChartType.value,
-      labels: labels,
-      periods: periods,
-      valuesByPeriod: valuesByPeriod,
+      labels,
+      periods,
+      valuesByPeriod,
       duration: Number(questionDuration.value || 15),
+      axisMax: Number(questionAxisMax.value || 20),
+      pictogramUnit: Number(questionPictogramUnit.value || 1),
       createdAt: serverTimestamp(),
       teacherEmail: teacherEmail.textContent || ""
     });
@@ -664,6 +739,8 @@ saveQuestionBtn.addEventListener("click", async () => {
     questionPeriods.value = "";
     questionValues.value = "";
     questionDuration.value = 15;
+    questionAxisMax.value = 20;
+    questionPictogramUnit.value = 1;
     await loadQuestions();
     switchTab("bank");
   } catch (err) {
@@ -704,14 +781,12 @@ function renderQuestionList(items) {
         <button class="mini-btn delete-btn">Xóa</button>
       </div>
     `;
-
     box.querySelector(".select-btn").addEventListener("click", () => {
       setSelectedQuestion(item);
       roomDuration.value = item.duration || 15;
       showMessage(questionMessage, `Đã chọn đề: ${item.title}`, "success");
       switchTab("room");
     });
-
     box.querySelector(".delete-btn").addEventListener("click", async () => {
       const ok = window.confirm(`Xóa đề "${item.title}"?`);
       if (!ok) return;
@@ -719,7 +794,6 @@ function renderQuestionList(items) {
       if (selectedQuestion && selectedQuestion.id === item.id) setSelectedQuestion(null);
       await loadQuestions();
     });
-
     questionList.appendChild(box);
   });
 }
@@ -733,12 +807,8 @@ async function loadQuestions() {
     } catch (err) {
       snapshot = await getDocs(collection(db, "question_bank"));
     }
-
     questionCache = [];
-    snapshot.forEach((item) => {
-      questionCache.push({ id: item.id, ...item.data() });
-    });
-
+    snapshot.forEach((item) => questionCache.push({ id: item.id, ...item.data() }));
     statQuestionCount.textContent = String(questionCache.length);
     renderQuestionList(questionCache);
   } catch (err) {
@@ -749,13 +819,8 @@ async function loadQuestions() {
 
 async function startRoomFromList(roomId) {
   try {
-    await updateDoc(doc(db, "rooms", roomId), {
-      status: "started",
-      startedAt: serverTimestamp()
-    });
-    if (currentTeacherRoomId === roomId) {
-      showMessage(roomMessage, "Đã bắt đầu phòng thi.", "success");
-    }
+    await updateDoc(doc(db, "rooms", roomId), { status: "started", startedAt: serverTimestamp() });
+    if (currentTeacherRoomId === roomId) showMessage(roomMessage, "Đã bắt đầu phòng thi.", "success");
     await loadRooms();
   } catch (err) {
     console.error(err);
@@ -771,12 +836,8 @@ async function loadRooms() {
     } catch (err) {
       snapshot = await getDocs(collection(db, "rooms"));
     }
-
     roomCache = [];
-    snapshot.forEach((item) => {
-      roomCache.push({ id: item.id, ...item.data() });
-    });
-
+    snapshot.forEach((item) => roomCache.push({ id: item.id, ...item.data() }));
     statRoomCount.textContent = String(roomCache.length);
     roomList.innerHTML = "";
 
@@ -789,7 +850,6 @@ async function loadRooms() {
       const box = document.createElement("div");
       box.className = "room-item";
       const started = room.status === "started";
-
       box.innerHTML = `
         <div class="question-item-title">${room.roomCode || ""}</div>
         <div class="small">Đề: ${room.questionTitle || ""}</div>
@@ -799,12 +859,8 @@ async function loadRooms() {
           <button class="mini-btn start-btn" ${started ? "disabled" : ""}>${started ? "Đã bắt đầu" : "Bắt đầu"}</button>
         </div>
       `;
-
       const btn = box.querySelector(".start-btn");
-      if (!started) {
-        btn.addEventListener("click", () => startRoomFromList(room.id));
-      }
-
+      if (!started) btn.addEventListener("click", () => startRoomFromList(room.id));
       roomList.appendChild(box);
     });
   } catch (err) {

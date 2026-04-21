@@ -87,6 +87,7 @@ button:disabled { opacity: 0.6; cursor: default; }
   color: #475569;
   font-size: 14px;
 }
+.note-mini { margin-top: 14px; }
 .hidden { display: none; }
 .message {
   min-height: 22px;
@@ -204,42 +205,84 @@ button:disabled { opacity: 0.6; cursor: default; }
   font-weight: 700;
   margin-bottom: 10px;
 }
-.work-grid {
+.chart-box {
+  height: 320px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px;
+}
+.control-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-top: 12px;
 }
-.work-grid.one-col {
+.control-grid.one-col {
   grid-template-columns: 1fr;
 }
-.work-card, .slider-row {
+.control-card {
   background: white;
   border: 1px solid #cbd5e1;
   border-radius: 12px;
   padding: 12px;
 }
-.work-card-title {
+.control-title {
   font-weight: 700;
   margin-bottom: 8px;
 }
-.total-box {
+.pie-total {
   margin-top: 12px;
   padding: 10px 12px;
   border-radius: 10px;
+  border: 1px solid #fdba74;
   background: #fff7ed;
   color: #9a3412;
-  border: 1px solid #fdba74;
 }
-.total-box.ok {
+.pie-total.ok {
+  border-color: #86efac;
   background: #ecfdf5;
   color: #166534;
-  border-color: #86efac;
 }
-.total-box.warn {
+.pie-total.warn {
+  border-color: #fdba74;
   background: #fff7ed;
   color: #9a3412;
-  border-color: #fdba74;
+}
+.pictogram-section {
+  margin-top: 14px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+}
+.pictogram-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.pictogram-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 24px);
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.picto-cell {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  padding: 0;
+  margin: 0;
+  border-radius: 4px;
+  border: 1px solid #94a3b8;
+  background: #fff;
+  color: transparent;
+}
+.picto-cell.active {
+  background: #2563eb;
+  border-color: #2563eb;
 }
 footer {
   margin-top: 28px;
@@ -248,11 +291,14 @@ footer {
   font-size: 13px;
 }
 @media (max-width: 860px) {
-  .layout, .stats-grid, .form-grid, .filter-grid, .teacher-room-actions, .work-grid {
+  .layout, .stats-grid, .form-grid, .filter-grid, .teacher-room-actions, .control-grid {
     grid-template-columns: 1fr;
   }
-  .teacher-head, .question-actions {
+  .teacher-head, .question-actions, .pictogram-head {
     flex-direction: column;
   }
   .small-btn { width: 100%; }
+  .pictogram-grid {
+    grid-template-columns: repeat(8, 24px);
+  }
 }
